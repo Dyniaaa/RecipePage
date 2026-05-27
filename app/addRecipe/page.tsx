@@ -1,9 +1,10 @@
+import Link from "next/link";
 import styles from "./page.module.scss";
 
 export default function AddRecipePage() {
   return (
     <main>
-      <a>
+      <Link href="/">
         <svg
           width="24"
           height="24"
@@ -16,7 +17,7 @@ export default function AddRecipePage() {
           <polyline points="12 19 5 12 12 5" />
         </svg>
         Powrót do strony głównej
-      </a>
+      </Link>
     </main>
   );
 }

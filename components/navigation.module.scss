@@ -1,0 +1,135 @@
+.navigation {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 1.75rem;
+  min-height: 82px;
+  background: #ffffff;
+  border-bottom: 2px solid rgba(255, 15, 115, 0.18);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  text-decoration: none;
+}
+
+.logoWrapper {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #ff2a86;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.user {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.7rem 1rem;
+  color: black;
+  font-weight: 600;
+  font-size: 0.95rem;
+
+  &:hover {
+    color: #ff2a86;
+  }
+}
+
+.userIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+}
+
+.button,
+.logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.88rem 1.3rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.button {
+  gap: 1rem;
+  background: #ff2a86;
+}
+
+.button:hover {
+  background: #b6195d;
+}
+
+.logout {
+  gap: 1rem;
+  background: #ffffff;
+  color: #ff2a86;
+  border-color: rgba(255, 98, 163, 0.22);
+}
+
+.logout:hover {
+  background: #fff0f8;
+  color: gray;
+}
+
+@media (max-width: 860px) {
+  .navigation {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem 1.25rem;
+  }
+
+  .actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .button,
+  .logout {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .navigation {
+    padding: 0.9rem 1rem;
+  }
+
+  .actions {
+    gap: 0.6rem;
+  }
+
+  .button,
+  .logout {
+    width: 100%;
+  }
+}
