@@ -24,13 +24,13 @@ export default function RegisterForm() {
         password: formData.get("password"),
       }),
     });
+    await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+    });
 
     if (res.ok) {
       router.push("/");
-      await signIn("credentials", {
-        email: formData.get("email"),
-        password: formData.get("password"),
-      });
     } else {
       alert("Registration failed");
     }

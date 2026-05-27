@@ -5,11 +5,17 @@ export async function createUser(
   email: string,
   password: string,
 ) {
-  return await prisma.app_users.create({
+  return prisma.user.create({
     data: {
       name,
       email,
       password,
     },
+  });
+}
+
+export async function getUserByEmail(email: string) {
+  return prisma.user.findUnique({
+    where: { email },
   });
 }

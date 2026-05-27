@@ -2,7 +2,6 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
 import { prisma } from "@/lib/prisma";
-import { signIn } from "next-auth/react";
 
 const handler = NextAuth({
   session: {
@@ -24,7 +23,7 @@ const handler = NextAuth({
           return null;
         }
 
-        const user = await prisma.app_users.findUnique({
+        const user = await prisma.user.findUnique({
           where: {
             email: credentials.email,
           },

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { getServerSession } from "next-auth";
 import "./globals.css";
-import Link from "next/link";
 import Logout from "./logout";
 
 const geistSans = Geist({
@@ -29,10 +28,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <nav>
-          {!!session && <Logout />}
-          {!session && <Link href="/login">Login</Link>}
-        </nav>
+        <nav>{session ? <Logout /> : null}</nav>
         {children}
       </body>
     </html>

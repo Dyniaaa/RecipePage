@@ -7,9 +7,79 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model app_users {
-  id       String @id @default(cuid())
-  email    String @unique
-  name     String
-  password String
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  image     String?
+  createdAt DateTime @default(now())
+
+  recipes   Recipe[]
+  favorites Favorite[]
+  comments  Comment[]
+}
+
+model Recipe {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+
+  steps       RecipeStep[]
+  ingredients Ingredient[]
+
+  favorites   Favorite[]
+  comments    Comment[]
+
+  @@index([title])
+}
+
+model RecipeStep {
+  id        String @id @default(cuid())
+  order     Int
+  text      String
+
+  recipeId  String
+  recipe    Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+}
+
+model Ingredient {
+  id        String @id @default(cuid())
+  name      String
+  amount    String?
+  unit      String?
+
+  recipeId  String
+  recipe    Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  recipeId  String
+
+  user      User     @relation(fields: [userId], references: [id])
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+
+  @@unique([userId, recipeId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  userId    String
+  recipeId  String
+
+  user      User     @relation(fields: [userId], references: [id])
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
 }
