@@ -1,4 +1,5 @@
 export const runtime = "nodejs";
+import { hash } from "bcrypt";
 
 import { NextResponse } from "next/server";
 import { createUser } from "@/lib/users"; // sprawdź ścieżkę
@@ -15,7 +16,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const user = await createUser(name, email, password);
+    const hashedPassword = await hash(password, 10);
+
+    const user = await createUser(name, email, hashedPassword);
 
     return NextResponse.json(
       {
