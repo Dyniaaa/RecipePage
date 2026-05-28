@@ -10,7 +10,7 @@ import logo from "@/public/logo.png";
 export default function RegisterForm() {
   const router = useRouter();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const res = await fetch("/api/auth/register", {

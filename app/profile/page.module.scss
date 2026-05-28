@@ -3,6 +3,21 @@
   width: 100%;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: #ff2a86;
+
+  .avatarPlaceholder {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    color: #ff2a86;
+    background: #ffdbea;
+    margin-bottom: 1.5rem;
+  }
 }

@@ -1,0 +1,258 @@
+"use client";
+
+import styles from "./form.module.scss";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
+  const router = useRouter();
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const imageFile = (e.currentTarget.querySelector('input[type="file"]') as HTMLInputElement)?.files?.[0];
+
+    let imageUrl = null;
+
+    // Jeśli jest plik, wgraj go
+    if (imageFile) {
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", imageFile);
+
+      const uploadRes = await fetch("/api/uploadImage", {
+        method: "POST",
+        body: uploadFormData,
+      });
+
+      if (!uploadRes.ok) {
+        alert("Nie udało się wgrać zdjęcia");
+        return;
+      }
+
+      const uploadData = await uploadRes.json();
+      imageUrl = uploadData.url;
+    }
+
+    // Pobierz authorId na podstawie email użytkownika
+    const userRes = await fetch("/api/getUserId", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: userEmail }),
+    });
+
+    if (!userRes.ok) {
+      alert("Nie udało się pobrać ID użytkownika");
+      return;
+    }
+
+    const userData = await userRes.json();
+    const authorId = userData.id;
+
+    const res = await fetch("/api/addRecipe", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: formData.get("recipeTitle"),
+        description: formData.get("summary"),
+        image: imageUrl,
+        authorId: authorId,
+      }),
+    });
+
+    if (res.ok) {
+      router.push("/");
+    } else {
+      alert("Failed to add recipe");
+    }
+  };
+  return (
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Podstawowe Informacje</h2>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor="recipeTitle">
+            Tytuł Przepisu
+          </label>
+          <input
+            className={styles.input}
+            type="text"
+            id="recipeTitle"
+            name="recipeTitle"
+            placeholder="np. Spaghetti Carbonara"
+          />
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor="summary">
+            Krótki Opis
+          </label>
+          <textarea
+            className={styles.textarea}
+            id="summary"
+            name="summary"
+            placeholder="Krótki opis Twojego przepisu..."
+          />
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor="recipeImage">
+            Zdjęcie Przepisu
+          </label>
+          <input
+            className={styles.input}
+            type="file"
+            id="recipeImage"
+            name="recipeImage"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+          {imagePreview && (
+            <div className={styles.imagePreview}>
+              <img src={imagePreview} alt="Preview" />
+            </div>
+          )}
+        </div>
+
+        <div className={styles.twoColumn}>
+          <div className={styles.fieldGroup}>
+            <label className={styles.label} htmlFor="prepTime">
+              Czas Przygotowania (minuty)
+            </label>
+            <input
+              className={styles.input}
+              type="number"
+              id="prepTime"
+              name="prepTime"
+              placeholder="30"
+            />
+          </div>
+
+          <div className={styles.fieldGroup}>
+            <label className={styles.label} htmlFor="servings">
+              Porcje
+            </label>
+            <input
+              className={styles.input}
+              type="number"
+              id="servings"
+              name="servings"
+              placeholder="4"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Składniki</h2>
+
+        <div className={styles.ingredientHeader}>
+          <div className={styles.ingredientColumn}>Nazwa składnika</div>
+          <div className={styles.ingredientColumn}>Ilość</div>
+          <div className={styles.ingredientColumn}>Kalorie</div>
+        </div>
+
+        <div className={styles.ingredientRow}>
+          <input
+            className={styles.input}
+            type="text"
+            placeholder="Nazwa składnika"
+          />
+          <input
+            className={styles.input}
+            type="text"
+            placeholder="Ilość (np. 200g, 1 szklanka)"
+          />
+          <input
+            className={styles.input}
+            type="text"
+            placeholder="Kalorie (np. 150 cal)"
+          />
+        </div>
+
+        <button className={styles.addButton} type="button">
+          <span className={styles.plus}>+</span> Dodaj Składnik
+        </button>
+      </section>
+
+      <section className={styles.calorieSection}>
+        <h2 className={styles.calorieTitle}>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2C12 2 13 5 10 8C8 10 7 12 7 14C7 17.866 10.134 21 14 21C17.866 21 21 17.866 21 14C21 10 18 8 16 6C16.5 9 14 10 14 10C14 10 14 7 12 2Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              fill="none"
+              strokeLinejoin="round"
+            />
+          </svg>
+          Podsumowanie Kalorii
+        </h2>
+        <p className={styles.calorieSubtext}>
+          Informacje odżywcze dla tego przepisu
+        </p>
+
+        <div className={styles.calorieRow}>
+          <span>Kalorie:</span>
+          <span className={styles.calorieValue}>0 cal</span>
+        </div>
+
+        <div className={styles.calorieRow}>
+          <span>Na porcję:</span>
+          <span className={styles.calorieValue}>0 cal</span>
+        </div>
+
+        <div className={styles.calorieRow}>
+          <span>Podział:</span>
+          <span className={styles.calorieValue}>0 cal</span>
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Instrukcje</h2>
+
+        <div className={styles.stepsContainer}>
+          <div className={styles.stepRow}>
+            <div className={styles.stepNumber}>1</div>
+            <textarea
+              className={styles.textarea}
+              placeholder="Opisz krok 1..."
+            />
+          </div>
+        </div>
+
+        <button className={styles.addButton} type="button">
+          <span className={styles.plus}>+</span> Dodaj Krok
+        </button>
+      </section>
+
+      <div className={styles.formActions}>
+        <button type="submit" className={styles.submitButton}>
+          Zapisz Przepis
+        </button>
+      </div>
+    </form>
+  );
+}

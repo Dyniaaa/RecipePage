@@ -1,6 +1,6 @@
 export const runtime = "nodejs";
-import { hash } from "bcrypt";
 
+import { hash } from "bcrypt";
 import { NextResponse } from "next/server";
 import { createUser } from "@/lib/user"; // sprawdź ścieżkę
 
