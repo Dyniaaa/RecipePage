@@ -26,7 +26,6 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    // Pobierz authorId na podstawie email użytkownika
     const userRes = await fetch("/api/getUserId", {
       method: "POST",
       headers: {
