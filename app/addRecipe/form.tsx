@@ -7,13 +7,16 @@ import { useState } from "react";
 export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
   const router = useRouter();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        const base64 = reader.result as string;
+        setImagePreview(base64);
+        setImageBase64(base64);
       };
       reader.readAsDataURL(file);
     }
@@ -22,28 +25,6 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const imageFile = (e.currentTarget.querySelector('input[type="file"]') as HTMLInputElement)?.files?.[0];
-
-    let imageUrl = null;
-
-    // Jeśli jest plik, wgraj go
-    if (imageFile) {
-      const uploadFormData = new FormData();
-      uploadFormData.append("file", imageFile);
-
-      const uploadRes = await fetch("/api/uploadImage", {
-        method: "POST",
-        body: uploadFormData,
-      });
-
-      if (!uploadRes.ok) {
-        alert("Nie udało się wgrać zdjęcia");
-        return;
-      }
-
-      const uploadData = await uploadRes.json();
-      imageUrl = uploadData.url;
-    }
 
     // Pobierz authorId na podstawie email użytkownika
     const userRes = await fetch("/api/getUserId", {
@@ -70,7 +51,7 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
       body: JSON.stringify({
         title: formData.get("recipeTitle"),
         description: formData.get("summary"),
-        image: imageUrl,
+        image: imageBase64,
         authorId: authorId,
       }),
     });
