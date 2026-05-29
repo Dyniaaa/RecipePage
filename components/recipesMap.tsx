@@ -1,8 +1,6 @@
 import styles from "./recipesMap.module.scss";
 
 export default function RecipesMap({ recipes }: { recipes: any[] }) {
-  console.log(recipes);
-
   return (
     <ul className={styles.grid}>
       {recipes.map((recipe) => (
