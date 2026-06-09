@@ -4,7 +4,7 @@ import { createRecipe } from "@/lib/recipe";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { title, description, image, authorId } = body;
+    const { title, description, image, authorId, ingredients, steps } = body;
 
     if (!title || !authorId) {
       return NextResponse.json(
@@ -18,6 +18,8 @@ export async function POST(req: Request) {
       description,
       image,
       authorId,
+      ingredients,
+      steps,
     });
 
     return NextResponse.json(recipe, { status: 201 });

@@ -3,11 +3,19 @@
 import styles from "./form.module.scss";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import IngredientsSection from "@/components/IngredientsSection";
+import StepsSection from "@/components/StepsSection";
 
 export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
   const router = useRouter();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [ingredients, setIngredients] = useState<
+    { id: string; name: string; amount: string; calories: string }[]
+  >([{ id: "1", name: "", amount: "", calories: "" }]);
+  const [steps, setSteps] = useState<{ id: string; text: string }[]>([
+    { id: "1", text: "" },
+  ]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -52,6 +60,8 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
         description: formData.get("summary"),
         image: imageBase64,
         authorId: authorId,
+        ingredients: ingredients,
+        steps: steps,
       }),
     });
 
@@ -61,6 +71,7 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
       alert("Failed to add recipe");
     }
   };
+
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <section className={styles.section}>
@@ -139,37 +150,10 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
         </div>
       </section>
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Składniki</h2>
-
-        <div className={styles.ingredientHeader}>
-          <div className={styles.ingredientColumn}>Nazwa składnika</div>
-          <div className={styles.ingredientColumn}>Ilość</div>
-          <div className={styles.ingredientColumn}>Kalorie</div>
-        </div>
-
-        <div className={styles.ingredientRow}>
-          <input
-            className={styles.input}
-            type="text"
-            placeholder="Nazwa składnika"
-          />
-          <input
-            className={styles.input}
-            type="text"
-            placeholder="Ilość (np. 200g, 1 szklanka)"
-          />
-          <input
-            className={styles.input}
-            type="text"
-            placeholder="Kalorie (np. 150 cal)"
-          />
-        </div>
-
-        <button className={styles.addButton} type="button">
-          <span className={styles.plus}>+</span> Dodaj Składnik
-        </button>
-      </section>
+      <IngredientsSection
+        ingredients={ingredients}
+        setIngredients={setIngredients}
+      />
 
       <section className={styles.calorieSection}>
         <h2 className={styles.calorieTitle}>
@@ -210,23 +194,7 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
         </div>
       </section>
 
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>Instrukcje</h2>
-
-        <div className={styles.stepsContainer}>
-          <div className={styles.stepRow}>
-            <div className={styles.stepNumber}>1</div>
-            <textarea
-              className={styles.textarea}
-              placeholder="Opisz krok 1..."
-            />
-          </div>
-        </div>
-
-        <button className={styles.addButton} type="button">
-          <span className={styles.plus}>+</span> Dodaj Krok
-        </button>
-      </section>
+      <StepsSection steps={steps} setSteps={setSteps} />
 
       <div className={styles.formActions}>
         <button type="submit" className={styles.submitButton}>

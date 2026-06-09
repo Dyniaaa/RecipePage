@@ -51,9 +51,10 @@ model RecipeStep {
 
 model Ingredient {
   id        String @id @default(cuid())
+
   name      String
   amount    String?
-  unit      String?
+  calories  String?
 
   recipeId  String
   recipe    Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)

@@ -1,32 +1,64 @@
 import { getServerSession } from "next-auth";
 import styles from "./page.module.scss";
-import Image from "next/image";
+import ProfileForm from "./form";
 
 export default async function ProfilePage() {
   const session = await getServerSession();
 
-  const FirstLetter = (n: string) => n.slice(0, 1).toUpperCase();
-
   return (
-    <div className={styles.profileMain}>
-      <h1>Profile Page</h1>
-      {!session?.user?.image ? (
-        <div className={styles.avatarPlaceholder}>
-          <span aria-hidden="true">
-            {FirstLetter(session?.user?.name || "")}
-          </span>
+    <main className={styles.profileMain}>
+      <div className={styles.container}>
+        <div className={styles.topSection}>
+          <ProfileForm session={session} />
+
+          <aside className={styles.statsCard}>
+            <h2>Statistics</h2>
+
+            <div className={styles.statsList}>
+              <div className={styles.statItem}>
+                <div className={styles.statIcon}>🍳</div>
+
+                <div>
+                  <p>Recipes</p>
+                  <span>0</span>
+                </div>
+              </div>
+
+              <div className={styles.statItem}>
+                <div className={styles.statIcon}>♡</div>
+
+                <div>
+                  <p>Total Likes</p>
+                  <span>0</span>
+                </div>
+              </div>
+
+              <div className={styles.statItem}>
+                <div className={styles.statIcon}>💬</div>
+
+                <div>
+                  <p>Comments</p>
+                  <span>0</span>
+                </div>
+              </div>
+            </div>
+          </aside>
         </div>
-      ) : (
-        <Image
-          src={session?.user?.image}
-          alt="User Avatar"
-          width={120}
-          height={120}
-          className={styles.avatar}
-        />
-      )}
-      <h2>{session?.user?.name}</h2>
-      <h2>{session?.user?.email}</h2>
-    </div>
+
+        <section className={styles.recipesSection}>
+          <h2>My Recipes</h2>
+
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>🍳</div>
+
+            <p className={styles.emptyTitle}>No recipes yet</p>
+
+            <p className={styles.emptySubtitle}>
+              Start sharing your delicious recipes!
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
   );
 }

@@ -5,9 +5,27 @@ export async function createRecipe(data: {
   description?: string;
   image?: string;
   authorId: string;
+  ingredients: { name: string; amount: string; calories: string }[];
+  steps: { text: string }[];
 }) {
   return prisma.recipe.create({
-    data,
+    data: {
+      title: data.title,
+      description: data.description,
+      image: data.image,
+      authorId: data.authorId,
+
+      ingredients: {
+        create: data.ingredients,
+      },
+
+      steps: {
+        create: data.steps.map((step, index) => ({
+          text: step.text,
+          order: index + 1,
+        })),
+      },
+    },
   });
 }
 
@@ -30,9 +48,9 @@ export async function getRecipes(query?: string) {
   });
 }
 
-export async function getRecipeById(id: string) {
-  return prisma.recipe.findUnique({
-    where: { id },
+export async function getRecipeByAuthor(authorId: string) {
+  return prisma.recipe.findMany({
+    where: { authorId },
     include: {
       author: true,
       steps: {

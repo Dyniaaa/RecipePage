@@ -69,66 +69,6 @@
   gap: 1.5rem;
 }
 
-/* Ingredients Section */
-.ingredientHeader {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr;
-  gap: 1rem;
-  padding: 1rem;
-  background: rgba(236, 72, 153, 0.05);
-  border-radius: 12px;
-  margin-bottom: 1rem;
-  font-weight: 600;
-  color: #111827;
-  font-size: 0.9rem;
-}
-
-.ingredientColumn {
-  display: flex;
-  align-items: center;
-}
-
-.ingredientRow {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1rem;
-
-  .input {
-    margin-bottom: 0;
-  }
-}
-
-.addButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 1rem;
-  border: 2px dashed rgba(236, 72, 153, 0.3);
-  border-radius: 16px;
-  background: rgba(236, 72, 153, 0.05);
-  color: #dc1f85;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    border-color: #ec4899;
-    background: rgba(236, 72, 153, 0.1);
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
-}
-
-.plus {
-  font-size: 1.3rem;
-  font-weight: 700;
-}
-
 /* Calorie Summary Section */
 .calorieSection {
   background: linear-gradient(
@@ -181,34 +121,6 @@
 .calorieValue {
   font-weight: 700;
   color: #dc1f85;
-}
-
-/* Instructions Section */
-.stepsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.stepRow {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-}
-
-.stepNumber {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: #ec4899;
-  color: white;
-  border-radius: 50%;
-  font-weight: 700;
-  flex-shrink: 0;
-  margin-top: 0.5rem;
 }
 
 /* Form Actions */

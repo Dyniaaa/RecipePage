@@ -1,0 +1,122 @@
+.section {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  border: 1px solid rgba(236, 72, 153, 0.15);
+}
+
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #dc1f85;
+  margin: 0 0 1.5rem 0;
+}
+
+.ingredientHeader {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr auto;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(236, 72, 153, 0.05);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #111827;
+  font-size: 0.9rem;
+}
+
+.ingredientColumn {
+  display: flex;
+  align-items: center;
+}
+
+.ingredientRow {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr auto;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+
+  .input {
+    margin-bottom: 0;
+  }
+}
+
+.input {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(236, 72, 153, 0.18);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #111827;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+
+  &:focus {
+    border-color: #ec4899;
+    box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.12);
+  }
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem;
+  border: 2px dashed rgba(236, 72, 153, 0.3);
+  border-radius: 16px;
+  background: rgba(236, 72, 153, 0.05);
+  color: #dc1f85;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #ec4899;
+    background: rgba(236, 72, 153, 0.1);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.plus {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.removeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  font-weight: 600;
+
+  &:hover {
+    background: #fecaca;
+    color: #b91c1c;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}

@@ -44,13 +44,7 @@ export default function Home() {
             >
               <circle cx="60" cy="60" r="50" fill="#FCE7F3" />
 
-              <circle
-                cx="60"
-                cy="60"
-                r="22"
-                stroke="#EC4899"
-                strokeWidth="4"
-              />
+              <circle cx="60" cy="60" r="22" stroke="#EC4899" strokeWidth="4" />
 
               <path
                 d="M35 38V50"
