@@ -4,8 +4,12 @@ export async function createRecipe(data: {
   title: string;
   description?: string;
   image?: string;
+  calories?: number;
+  protein?: number;
+  time?: number;
+  servings?: number;
   authorId: string;
-  ingredients: { name: string; amount: string; calories: string }[];
+  ingredients: { name: string; amount: string }[];
   steps: { text: string }[];
 }) {
   return prisma.recipe.create({
@@ -13,10 +17,17 @@ export async function createRecipe(data: {
       title: data.title,
       description: data.description,
       image: data.image,
+      calories: data.calories,
+      time: data.time,
+      protein: data.protein,
+      servings: data.servings || 1,
       authorId: data.authorId,
 
       ingredients: {
-        create: data.ingredients,
+        create: data.ingredients.map(({ name, amount }) => ({
+          name,
+          amount,
+        })),
       },
 
       steps: {
@@ -56,6 +67,27 @@ export async function getRecipeByAuthor(authorId: string) {
       steps: {
         orderBy: { order: "asc" },
       },
+      ingredients: true,
+      comments: true,
+      favorites: true,
+    },
+  });
+}
+
+export async function getRecipeByTitle(title: string) {
+  return prisma.recipe.findFirst({
+    where: {
+      title: {
+        contains: title,
+        mode: "insensitive",
+      },
+    },
+    include: {
+      author: true,
+      steps: {
+        orderBy: { order: "asc" },
+      },
+
       ingredients: true,
       comments: true,
       favorites: true,

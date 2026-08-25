@@ -7,7 +7,6 @@ interface Ingredient {
   id: string;
   name: string;
   amount: string;
-  calories: string;
 }
 
 export default function IngredientsSection({
@@ -21,7 +20,7 @@ export default function IngredientsSection({
     const newId = Date.now().toString();
     setIngredients([
       ...ingredients,
-      { id: newId, name: "", amount: "", calories: "" },
+      { id: newId, name: "", amount: "" },
     ]);
   };
 
@@ -50,7 +49,6 @@ export default function IngredientsSection({
       <div className={styles.ingredientHeader}>
         <div className={styles.ingredientColumn}>Nazwa składnika</div>
         <div className={styles.ingredientColumn}>Ilość</div>
-        <div className={styles.ingredientColumn}>Kalorie</div>
         <div className={styles.ingredientColumn}></div>
       </div>
 
@@ -72,15 +70,6 @@ export default function IngredientsSection({
             value={ingredient.amount}
             onChange={(e) =>
               handleIngredientChange(ingredient.id, "amount", e.target.value)
-            }
-          />
-          <input
-            className={styles.input}
-            type="text"
-            placeholder="Kalorie (np. 150 cal)"
-            value={ingredient.calories}
-            onChange={(e) =>
-              handleIngredientChange(ingredient.id, "calories", e.target.value)
             }
           />
           {ingredients.length > 1 && (

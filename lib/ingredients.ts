@@ -5,7 +5,6 @@ export async function addIngredients(
   ingredients: {
     name: string;
     amount?: string;
-    unit?: string;
   }[],
 ) {
   return prisma.ingredient.createMany({

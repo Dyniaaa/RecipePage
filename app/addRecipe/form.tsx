@@ -11,8 +11,8 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [ingredients, setIngredients] = useState<
-    { id: string; name: string; amount: string; calories: string }[]
-  >([{ id: "1", name: "", amount: "", calories: "" }]);
+    { id: string; name: string; amount: string }[]
+  >([{ id: "1", name: "", amount: "" }]);
   const [steps, setSteps] = useState<{ id: string; text: string }[]>([
     { id: "1", text: "" },
   ]);
@@ -59,6 +59,10 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
         title: formData.get("recipeTitle"),
         description: formData.get("summary"),
         image: imageBase64,
+        calories: Number(formData.get("calories")) || undefined,
+        protein: Number(formData.get("protein")) || undefined,
+        time: Number(formData.get("prepTime")) || undefined,
+        servings: Number(formData.get("servings")) || 1,
         authorId: authorId,
         ingredients: ingredients,
         steps: steps,
@@ -142,6 +146,8 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
             <input
               className={styles.input}
               type="number"
+              min="1"
+              step="1"
               id="servings"
               name="servings"
               placeholder="4"
@@ -172,25 +178,42 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
               strokeLinejoin="round"
             />
           </svg>
-          Podsumowanie Kalorii
+          Podsumowanie Wartości Odżywczych
         </h2>
         <p className={styles.calorieSubtext}>
           Informacje odżywcze dla tego przepisu
         </p>
 
-        <div className={styles.calorieRow}>
-          <span>Kalorie:</span>
-          <span className={styles.calorieValue}>0 cal</span>
-        </div>
+        <div className={styles.twoColumn}>
+          <div className={styles.fieldGroup}>
+            <label className={styles.label} htmlFor="calories">
+              Kalorie całego przepisu
+            </label>
+            <input
+              className={styles.input}
+              type="number"
+              min="0"
+              step="0.1"
+              id="calories"
+              name="calories"
+              placeholder="np. 1200"
+            />
+          </div>
 
-        <div className={styles.calorieRow}>
-          <span>Na porcję:</span>
-          <span className={styles.calorieValue}>0 cal</span>
-        </div>
-
-        <div className={styles.calorieRow}>
-          <span>Podział:</span>
-          <span className={styles.calorieValue}>0 cal</span>
+          <div className={styles.fieldGroup}>
+            <label className={styles.label} htmlFor="protein">
+              Białko całego przepisu
+            </label>
+            <input
+              className={styles.input}
+              type="number"
+              min="0"
+              step="0.1"
+              id="protein"
+              name="protein"
+              placeholder="np. 60"
+            />
+          </div>
         </div>
       </section>
 

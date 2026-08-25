@@ -25,6 +25,10 @@ model Recipe {
   title       String
   description String?
   image       String?
+  time        Int      @default(0)
+  calories    Float?
+  protein     Float?
+  servings    Int      @default(1)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -54,7 +58,6 @@ model Ingredient {
 
   name      String
   amount    String?
-  calories  String?
 
   recipeId  String
   recipe    Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)

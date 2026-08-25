@@ -24,7 +24,7 @@ export default function RecipesMap({ recipes }: { recipes: any[] }) {
               <p className={styles.description}>{recipe.description}</p>
 
               <div className={styles.meta}>
-                <span>⏱ {recipe.prepTime ?? 0} min</span>
+                <span>⏱ {recipe.time ?? 0} min</span>
                 <span>🍽 {recipe.servings ?? 0} servings</span>
               </div>
 

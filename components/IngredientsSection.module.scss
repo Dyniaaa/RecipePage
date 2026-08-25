@@ -14,7 +14,7 @@
 
 .ingredientHeader {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr auto;
+  grid-template-columns: 1.5fr 1fr auto;
   gap: 1rem;
   padding: 1rem;
   background: rgba(236, 72, 153, 0.05);
@@ -32,7 +32,7 @@
 
 .ingredientRow {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr auto;
+  grid-template-columns: 1.5fr 1fr auto;
   gap: 1rem;
   margin-bottom: 1rem;
   align-items: flex-start;
