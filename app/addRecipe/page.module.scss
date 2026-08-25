@@ -32,3 +32,19 @@
   color: #dc1f85;
   margin: 0 0 2rem 0;
 }
+
+@media (max-width: 640px) {
+  .addRecipeMain {
+    padding: 1.25rem 12px 2rem;
+  }
+
+  .backLink {
+    margin-bottom: 1.25rem;
+  }
+
+  .title {
+    font-size: 1.55rem;
+    line-height: 1.2;
+    margin-bottom: 1.25rem;
+  }
+}

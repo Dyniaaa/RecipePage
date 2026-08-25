@@ -105,36 +105,63 @@
   color: gray;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1040px) {
   .navigation {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 1rem 1.25rem;
+    min-height: auto;
+    padding: 12px 0;
+  }
+
+  .container {
+    width: calc(100% - 24px);
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .brand {
+    gap: 0.55rem;
+  }
+
+  .logoWrapper {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+  }
+
+  .title {
+    font-size: 0.9rem;
   }
 
   .actions {
-    justify-content: flex-start;
-    width: 100%;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .user {
+    padding: 0.35rem;
+    font-size: 0;
+  }
+
+  .userIcon {
+    width: 28px;
+    height: 28px;
   }
 
   .button,
   .logout {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-}
-
-@media (max-width: 560px) {
-  .navigation {
-    padding: 0.9rem 1rem;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    gap: 0;
   }
 
-  .actions {
-    gap: 0.6rem;
+  .button svg,
+  .logout svg {
+    width: 20px;
+    height: 20px;
   }
 
   .button,
   .logout {
-    width: 100%;
+    font-size: 0;
   }
 }

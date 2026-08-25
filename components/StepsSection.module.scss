@@ -124,3 +124,20 @@
     transform: scale(0.95);
   }
 }
+
+@media (max-width: 640px) {
+  .section {
+    padding: 1.15rem;
+    border-radius: 14px;
+  }
+
+  .stepRow {
+    gap: 0.65rem;
+  }
+
+  .stepNumber {
+    width: 32px;
+    height: 32px;
+    font-size: 0.85rem;
+  }
+}

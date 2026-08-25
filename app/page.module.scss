@@ -9,7 +9,7 @@
   flex-wrap: wrap;
 
   .container {
-    width: 60%;
+    width: min(1200px, calc(100% - 32px));
 
     .title {
       font-size: 1.5rem;
@@ -68,6 +68,27 @@
       p {
         font-size: 1.2rem;
         color: #666;
+      }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .mainHome {
+    .container {
+      width: calc(100% - 24px);
+
+      .title {
+        font-size: 1.3rem;
+        margin-top: 1.25rem;
+      }
+
+      .subtitle {
+        line-height: 1.5;
+      }
+
+      .searchInput {
+        margin-bottom: 0.75rem;
       }
     }
   }
