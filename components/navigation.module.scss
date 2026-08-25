@@ -109,12 +109,12 @@
   .navigation {
     min-height: auto;
     padding: 12px 0;
-  }
 
-  .container {
-    width: calc(100% - 24px);
-    gap: 12px;
-    align-items: flex-start;
+    .container {
+      width: 90%;
+      gap: 12px;
+      align-items: flex-start;
+    }
   }
 
   .brand {
@@ -132,7 +132,7 @@
   }
 
   .actions {
-    justify-content: flex-end;
+    flex-direction: row;
     gap: 6px;
   }
 
@@ -162,5 +162,11 @@
   .button,
   .logout {
     font-size: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .title {
+    display: none;
   }
 }

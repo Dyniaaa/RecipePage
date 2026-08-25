@@ -28,7 +28,12 @@ export default function RecipesMap({ recipes }: { recipes: any[] }) {
                 <span>🍽 {recipe.servings ?? 0} servings</span>
               </div>
 
-              <div className={styles.calories}>{recipe.calories ?? 0} cal</div>
+              <div className={styles.calories}>
+                {recipe.calories && recipe.servings
+                  ? recipe.calories / recipe.servings
+                  : 0}{" "}
+                cal per serving
+              </div>
             </div>
           </Link>
         </li>
