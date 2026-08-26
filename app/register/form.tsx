@@ -35,6 +35,7 @@ export default function RegisterForm() {
       alert("Registration failed");
     }
   };
+
   return (
     <form className={styles.registerForm} onSubmit={handleSubmit}>
       <Image

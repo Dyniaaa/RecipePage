@@ -1,15 +1,12 @@
-import { getServerSession } from "next-auth";
 import styles from "./page.module.scss";
 import ProfileForm from "./form";
 
-export default async function ProfilePage() {
-  const session = await getServerSession();
-
+export default function ProfilePage() {
   return (
     <main className={styles.profileMain}>
       <div className={styles.container}>
         <div className={styles.topSection}>
-          <ProfileForm session={session} />
+          <ProfileForm />
 
           <aside className={styles.statsCard}>
             <h2>Statistics</h2>

@@ -17,10 +17,12 @@
       align-items: center;
       color: #24324a;
       font-size: 13px;
+      padding: 8px 0;
       text-decoration: none;
     }
 
     button {
+      display: none;
       margin-left: 8px;
       padding: 8px 12px;
       border: 1px solid #ff4f9a;
@@ -193,6 +195,7 @@
     }
 
     .comments {
+      display: none;
       padding: 0 22px 24px;
       color: #ff4f9a;
       font-size: 13px;

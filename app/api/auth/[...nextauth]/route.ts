@@ -1,9 +1,9 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt";
 import { prisma } from "@/lib/prisma";
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
@@ -11,14 +11,52 @@ const handler = NextAuth({
   pages: {
     signIn: "/login",
   },
+
+  callbacks: {
+    async jwt({ token, user, trigger, session }) {
+      // Przy logowaniu zapisujemy ID użytkownika do JWT
+      if (user) {
+        token.id = user.id;
+      }
+
+      // Wywoływane przez useSession().update()
+      if (trigger === "update" && session) {
+        token.name = session.name;
+        token.email = session.email;
+        token.picture = session.image;
+      }
+
+      return token;
+    },
+
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.image = token.picture;
+      }
+
+      return session;
+    },
+  },
+
   providers: [
     CredentialsProvider({
+      name: "Credentials",
+
       credentials: {
-        email: {},
-        password: {},
+        email: {
+          label: "Email",
+          type: "email",
+        },
+        password: {
+          label: "Password",
+          type: "password",
+        },
       },
 
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
@@ -44,12 +82,15 @@ const handler = NextAuth({
 
         return {
           id: user.id,
-          email: user.email,
           name: user.name,
+          email: user.email,
+          image: user.image,
         };
       },
     }),
   ],
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
