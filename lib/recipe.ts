@@ -44,10 +44,30 @@ export async function getRecipes(query?: string) {
   return prisma.recipe.findMany({
     where: query
       ? {
-          title: {
-            contains: query,
-            mode: "insensitive",
-          },
+          OR: [
+            {
+              title: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+            {
+              description: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+            {
+              ingredients: {
+                some: {
+                  name: {
+                    contains: query,
+                    mode: "insensitive",
+                  },
+                },
+              },
+            },
+          ],
         }
       : undefined,
     orderBy: { createdAt: "desc" },
@@ -74,13 +94,10 @@ export async function getRecipeByAuthor(authorId: string) {
   });
 }
 
-export async function getRecipeByTitle(title: string) {
+export async function getRecipeById(id: string) {
   return prisma.recipe.findFirst({
     where: {
-      title: {
-        contains: title,
-        mode: "insensitive",
-      },
+      id,
     },
     include: {
       author: true,
@@ -93,4 +110,47 @@ export async function getRecipeByTitle(title: string) {
       favorites: true,
     },
   });
+}
+
+export async function updateRecipe(
+  id: string,
+  data: {
+    title: string;
+    description?: string;
+    image?: string;
+    calories?: number;
+    protein?: number;
+    time?: number;
+    servings?: number;
+    ingredients: { name: string; amount: string }[];
+    steps: { text: string }[];
+  },
+) {
+  const recipe = await prisma.recipe.update({
+    where: { id },
+    data: {
+      title: data.title,
+      description: data.description,
+      image: data.image,
+      calories: data.calories,
+      time: data.time,
+      protein: data.protein,
+      servings: data.servings || 1,
+      ingredients: {
+        deleteMany: {},
+        create: data.ingredients.map(({ name, amount }) => ({
+          name,
+          amount,
+        })),
+      },
+      steps: {
+        deleteMany: {},
+        create: data.steps.map((step, index) => ({
+          text: step.text,
+          order: index + 1,
+        })),
+      },
+    },
+  });
+  return recipe;
 }

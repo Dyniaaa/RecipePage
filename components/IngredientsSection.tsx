@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import styles from "./IngredientsSection.module.scss";
 
 interface Ingredient {
@@ -18,10 +17,7 @@ export default function IngredientsSection({
 }) {
   const handleAddIngredient = () => {
     const newId = Date.now().toString();
-    setIngredients([
-      ...ingredients,
-      { id: newId, name: "", amount: "" },
-    ]);
+    setIngredients([...ingredients, { id: newId, name: "", amount: "" }]);
   };
 
   const handleRemoveIngredient = (id: string) => {

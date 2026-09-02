@@ -8,7 +8,6 @@
   background: white;
   padding: 2rem;
   border-radius: 20px;
-  border: 1px solid rgba(236, 72, 153, 0.15);
 }
 
 .sectionTitle {
@@ -69,7 +68,6 @@
   gap: 1.5rem;
 }
 
-/* Calorie Summary Section */
 .calorieSection {
   background: linear-gradient(
     135deg,
@@ -123,11 +121,9 @@
   color: #dc1f85;
 }
 
-/* Form Actions */
 .formActions {
   display: flex;
   gap: 1rem;
-  margin-top: 2rem;
 }
 
 .cancelButton {

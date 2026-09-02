@@ -8,15 +8,13 @@ export default function RecipesMap({ recipes }: { recipes: any[] }) {
     <ul className={styles.grid}>
       {recipes.map((recipe) => (
         <li key={recipe.id} className={styles.card}>
-          <Link href={recipe.title}>
+          <Link href={recipe.id}>
             <div className={styles.imageWrapper}>
               <img
                 src={recipe.image || "/placeholder.jpg"}
                 alt={recipe.title}
                 className={styles.image}
               />
-
-              <button className={styles.heartBtn}>♡</button>
             </div>
 
             <div className={styles.content}>
