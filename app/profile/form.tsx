@@ -24,7 +24,6 @@ export default function ProfileForm() {
 
     img.onload = () => {
       const canvas = document.createElement("canvas");
-
       const size = 150;
 
       canvas.width = size;
@@ -34,7 +33,11 @@ export default function ProfileForm() {
 
       if (!ctx) return;
 
-      ctx.drawImage(img, 0, 0, size, size);
+      const cropSize = Math.min(img.width, img.height);
+
+      const sx = (img.width - cropSize) / 2;
+      const sy = (img.height - cropSize) / 2;
+      ctx.drawImage(img, sx, sy, cropSize, cropSize, 0, 0, size, size);
 
       const compressedImage = canvas.toDataURL("image/jpeg", 0.7);
 
@@ -48,7 +51,6 @@ export default function ProfileForm() {
 
     img.src = URL.createObjectURL(file);
   };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -110,11 +112,9 @@ export default function ProfileForm() {
                 </span>
               </div>
             ) : (
-              <Image
+              <img
                 src={session.user.image}
                 alt="User Avatar"
-                width={120}
-                height={120}
                 className={styles.avatarImage}
               />
             )}
