@@ -14,12 +14,10 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user, trigger, session }) {
-      // Przy logowaniu zapisujemy ID użytkownika do JWT
       if (user) {
         token.id = user.id;
       }
 
-      // Wywoływane przez useSession().update()
       if (trigger === "update" && session) {
         token.name = session.name;
         token.email = session.email;

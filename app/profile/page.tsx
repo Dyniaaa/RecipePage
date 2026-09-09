@@ -1,7 +1,23 @@
 import styles from "./page.module.scss";
 import ProfileForm from "./form";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getRecipeByAuthor } from "@/lib/recipe";
+import { redirect } from "next/navigation";
+import ProfileRecipes from "@/components/profileRecipes";
 
-export default function ProfilePage() {
+export default async function ProfilePage() {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+
+  if (!userId) {
+    redirect("/login");
+  }
+
+  
+
+  const recipes = await getRecipeByAuthor(userId);
+
   return (
     <main className={styles.profileMain}>
       <div className={styles.container}>
@@ -9,15 +25,15 @@ export default function ProfilePage() {
           <ProfileForm />
 
           <aside className={styles.statsCard}>
-            <h2>Statistics</h2>
+            <h2>Statystyki</h2>
 
             <div className={styles.statsList}>
               <div className={styles.statItem}>
                 <div className={styles.statIcon}>🍳</div>
 
                 <div>
-                  <p>Recipes</p>
-                  <span>0</span>
+                  <p>Przepisy</p>
+                  <span>{recipes.length}</span>
                 </div>
               </div>
 
@@ -25,16 +41,7 @@ export default function ProfilePage() {
                 <div className={styles.statIcon}>♡</div>
 
                 <div>
-                  <p>Total Likes</p>
-                  <span>0</span>
-                </div>
-              </div>
-
-              <div className={styles.statItem}>
-                <div className={styles.statIcon}>💬</div>
-
-                <div>
-                  <p>Comments</p>
+                  <p>Ulubione</p>
                   <span>0</span>
                 </div>
               </div>
@@ -42,19 +49,7 @@ export default function ProfilePage() {
           </aside>
         </div>
 
-        <section className={styles.recipesSection}>
-          <h2>My Recipes</h2>
-
-          <div className={styles.emptyState}>
-            <div className={styles.emptyIcon}>🍳</div>
-
-            <p className={styles.emptyTitle}>No recipes yet</p>
-
-            <p className={styles.emptySubtitle}>
-              Start sharing your delicious recipes!
-            </p>
-          </div>
-        </section>
+        <ProfileRecipes recipes={recipes} />
       </div>
     </main>
   );

@@ -2,12 +2,17 @@ import { prisma } from "./prisma";
 
 export async function toggleFavorite(userId: string, recipeId: string) {
   const existing = await prisma.favorite.findFirst({
-    where: { userId, recipeId },
+    where: {
+      userId,
+      recipeId,
+    },
   });
 
   if (existing) {
     return prisma.favorite.delete({
-      where: { id: existing.id },
+      where: {
+        id: existing.id,
+      },
     });
   }
 
@@ -19,9 +24,22 @@ export async function toggleFavorite(userId: string, recipeId: string) {
   });
 }
 
+export async function isFavorite(userId: string, recipeId: string) {
+  const favorite = await prisma.favorite.findFirst({
+    where: {
+      userId,
+      recipeId,
+    },
+  });
+
+  return !!favorite;
+}
+
 export async function getUserFavorites(userId: string) {
   return prisma.favorite.findMany({
-    where: { userId },
+    where: {
+      userId,
+    },
     include: {
       recipe: true,
     },
