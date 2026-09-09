@@ -10,37 +10,51 @@ export default function ProfileForm() {
   const router = useRouter();
   const { data: session, update } = useSession();
   const [edit, setEdit] = useState(true);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const FirstLetter = (n: string) => n.slice(0, 1).toUpperCase();
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
 
+    const data = new FormData();
+
+    data.append("id", session?.user?.id || "");
+    data.append("name", formData.get("name") as string);
+    data.append("email", formData.get("email") as string);
+
+    if (imageFile) {
+      data.append("image", imageFile);
+    }
+
     const res = await fetch("/api/profile", {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: session?.user?.id,
-        name: formData.get("name"),
-        email: formData.get("email"),
-      }),
+      body: data,
     });
 
-    const data = await res.json();
+    const responseData = await res.json();
 
     if (!res.ok) {
-      console.error(data);
+      console.error(responseData);
       return;
     }
 
     await update({
-      name: data.name,
-      email: data.email,
-      image: data.image,
+      name: responseData.name,
+      email: responseData.email,
+      image: responseData.image,
     });
 
     setEdit(true);
@@ -76,7 +90,7 @@ export default function ProfileForm() {
                 alt="User Avatar"
                 width={120}
                 height={120}
-                className={styles.avatar}
+                className={styles.avatarImage}
               />
             )}
           </div>
@@ -95,6 +109,23 @@ export default function ProfileForm() {
         </div>
       ) : (
         <form className={styles.editForm} onSubmit={handleSubmit}>
+          <label className={styles.label} htmlFor="recipeImage">
+            Zdjęcie Przepisu
+          </label>
+          <input
+            className={styles.input}
+            type="file"
+            id="recipeImage"
+            name="recipeImage"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+          {imagePreview && (
+            <div className={styles.imagePreview}>
+              <img src={imagePreview} alt="Preview" />
+            </div>
+          )}
+
           <div className={styles.formGroup}>
             <label htmlFor="name">Name</label>
             <input
