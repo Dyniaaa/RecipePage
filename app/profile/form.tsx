@@ -11,7 +11,7 @@ export default function ProfileForm() {
   const { data: session, update } = useSession();
   const [edit, setEdit] = useState(true);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
 
   const FirstLetter = (n: string) => n.slice(0, 1).toUpperCase();
 
@@ -20,8 +20,33 @@ export default function ProfileForm() {
 
     if (!file) return;
 
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
+    const img = document.createElement("img");
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+
+      const size = 150;
+
+      canvas.width = size;
+      canvas.height = size;
+
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) return;
+
+      ctx.drawImage(img, 0, 0, size, size);
+
+      const compressedImage = canvas.toDataURL("image/jpeg", 0.7);
+
+      console.log("imageSize:", compressedImage.length);
+
+      setImagePreview(compressedImage);
+      setImageBase64(compressedImage);
+
+      URL.revokeObjectURL(img.src);
+    };
+
+    img.src = URL.createObjectURL(file);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,32 +54,32 @@ export default function ProfileForm() {
 
     const formData = new FormData(e.currentTarget);
 
-    const data = new FormData();
-
-    data.append("id", session?.user?.id || "");
-    data.append("name", formData.get("name") as string);
-    data.append("email", formData.get("email") as string);
-
-    if (imageFile) {
-      data.append("image", imageFile);
-    }
+    console.log("imageSize:", imageBase64?.length);
 
     const res = await fetch("/api/profile", {
       method: "PUT",
-      body: data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: session?.user?.id,
+        name: formData.get("name"),
+        email: formData.get("email"),
+        image: imageBase64,
+      }),
     });
 
-    const responseData = await res.json();
+    const data = await res.json();
 
     if (!res.ok) {
-      console.error(responseData);
+      console.error(data);
       return;
     }
 
     await update({
-      name: responseData.name,
-      email: responseData.email,
-      image: responseData.image,
+      name: data.name,
+      email: data.email,
+      image: data.image,
     });
 
     setEdit(true);
