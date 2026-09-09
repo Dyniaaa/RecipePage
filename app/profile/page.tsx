@@ -5,6 +5,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getRecipeByAuthor } from "@/lib/recipe";
 import { redirect } from "next/navigation";
 import ProfileRecipes from "@/components/profileRecipes";
+import { getUserFavorites } from "@/lib/favorite";
 
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
@@ -14,9 +15,8 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
-  
-
   const recipes = await getRecipeByAuthor(userId);
+  const favoriteRecipes = await getUserFavorites(userId);
 
   return (
     <main className={styles.profileMain}>
@@ -42,14 +42,14 @@ export default async function ProfilePage() {
 
                 <div>
                   <p>Ulubione</p>
-                  <span>0</span>
+                  <span>{favoriteRecipes.length}</span>
                 </div>
               </div>
             </div>
           </aside>
         </div>
 
-        <ProfileRecipes recipes={recipes} />
+        <ProfileRecipes recipes={recipes} favoriteRecipes={favoriteRecipes} />
       </div>
     </main>
   );

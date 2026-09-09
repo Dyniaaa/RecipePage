@@ -36,7 +36,7 @@ export async function isFavorite(userId: string, recipeId: string) {
 }
 
 export async function getUserFavorites(userId: string) {
-  return prisma.favorite.findMany({
+  const favorites = await prisma.favorite.findMany({
     where: {
       userId,
     },
@@ -44,4 +44,6 @@ export async function getUserFavorites(userId: string) {
       recipe: true,
     },
   });
+
+  return favorites.map((favorite) => favorite.recipe);
 }

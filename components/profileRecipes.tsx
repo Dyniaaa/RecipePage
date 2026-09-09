@@ -4,7 +4,13 @@ import { useState } from "react";
 import styles from "./profileRecipes.module.scss";
 import RecipesMap from "@/components/recipesMap";
 
-export default function ProfileRecipes({ recipes }: { recipes: any[] }) {
+export default function ProfileRecipes({
+  recipes,
+  favoriteRecipes,
+}: {
+  recipes: any[];
+  favoriteRecipes: any[];
+}) {
   const [list, setList] = useState(true);
 
   return (
@@ -14,13 +20,13 @@ export default function ProfileRecipes({ recipes }: { recipes: any[] }) {
           onClick={() => setList(true)}
           className={list ? styles.active : ""}
         >
-          My Recipes <span> {recipes.length} </span>
+          Moje przepisy <span> {recipes.length} </span>
         </button>
         <button
           onClick={() => setList(false)}
           className={!list ? styles.active : ""}
         >
-          My Favorites
+          Moje ulubione <span> {favoriteRecipes.length} </span>
         </button>
       </div>
 
@@ -40,7 +46,7 @@ export default function ProfileRecipes({ recipes }: { recipes: any[] }) {
         ) : (
           <RecipesMap recipes={recipes} />
         )
-      ) : recipes.length === 0 ? (
+      ) : favoriteRecipes.length === 0 ? (
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>🍳</div>
 
@@ -53,7 +59,7 @@ export default function ProfileRecipes({ recipes }: { recipes: any[] }) {
           </p>
         </div>
       ) : (
-        <RecipesMap recipes={recipes} />
+        <RecipesMap recipes={favoriteRecipes} />
       )}
     </section>
   );
