@@ -21,4 +21,4 @@ A recipe management web application built with Next.js.
 
 ## Live Demo
 
-The application is deployed with Netlify.
+[Happy Avocado](https://happyavocado[.]netlify[.]app/)
