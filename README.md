@@ -19,6 +19,4 @@ A recipe management web application built with Next.js.
 - NextAuth
 - SCSS
 
-You can check the website on: https://happyavocado.netlify.app/
-
-##
+You can check the website on [Happy Avocado](https://happyavocado.netlify.app/)
