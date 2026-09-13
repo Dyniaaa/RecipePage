@@ -20,5 +20,3 @@ A recipe management web application built with Next.js.
 - SCSS
 
 ## Live Demo
-
-https://happyavocado.netlify.app
