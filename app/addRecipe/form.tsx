@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import IngredientsSection from "@/components/IngredientsSection";
 import StepsSection from "@/components/StepsSection";
+import {
+  validateNumber,
+  validateRequired,
+  type FieldErrors,
+} from "@/lib/validation";
 
 export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
   const router = useRouter();
@@ -16,10 +21,26 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
   const [steps, setSteps] = useState<{ id: string; text: string }[]>([
     { id: "1", text: "" },
   ]);
+  const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [saving, setSaving] = useState(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (!file.type.startsWith("image/")) {
+        setFieldErrors((current) => ({ ...current, image: "Wybierz plik graficzny." }));
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        setFieldErrors((current) => ({
+          ...current,
+          image: "Zdjęcie może mieć maksymalnie 5 MB.",
+        }));
+        return;
+      }
+
+      setFieldErrors((current) => ({ ...current, image: "" }));
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64 = reader.result as string;
@@ -32,52 +53,100 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
+
     const formData = new FormData(e.currentTarget);
+    const title = String(formData.get("recipeTitle") || "");
+    const summary = String(formData.get("summary") || "");
+    const prepTime = String(formData.get("prepTime") || "");
+    const servings = String(formData.get("servings") || "");
+    const calories = String(formData.get("calories") || "");
+    const protein = String(formData.get("protein") || "");
+    const nextFieldErrors: FieldErrors = {
+      title: validateRequired(title, "Tytuł przepisu"),
+      summary: validateRequired(summary, "Opis przepisu"),
+      prepTime: validateNumber(prepTime, "Czas przygotowania", { min: 0, integer: true }),
+      servings: validateNumber(servings, "Liczba porcji", { min: 1, integer: true }),
+      calories: validateNumber(calories, "Kalorie", { min: 0 }),
+      protein: validateNumber(protein, "Białko", { min: 0 }),
+      image: fieldErrors.image || "",
+      ingredients: "",
+      steps: "",
+    };
 
-    const userRes = await fetch("/api/getUserId", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: userEmail }),
-    });
-
-    if (!userRes.ok) {
-      alert("Nie udało się pobrać ID użytkownika");
-      return;
+    if (ingredients.some((ingredient) => !ingredient.name.trim() || !ingredient.amount.trim())) {
+      nextFieldErrors.ingredients = "Uzupełnij nazwę i ilość każdego składnika.";
+    }
+    if (steps.some((step) => !step.text.trim())) {
+      nextFieldErrors.steps = "Uzupełnij treść każdego kroku przygotowania.";
     }
 
-    const userData = await userRes.json();
-    const authorId = userData.id;
+    setFieldErrors(nextFieldErrors);
+    if (Object.values(nextFieldErrors).some(Boolean)) return;
 
-    const res = await fetch("/api/addRecipe", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: formData.get("recipeTitle"),
-        description: formData.get("summary"),
-        image: imageBase64,
-        calories: Number(formData.get("calories")) || undefined,
-        protein: Number(formData.get("protein")) || undefined,
-        time: Number(formData.get("prepTime")) || undefined,
-        servings: Number(formData.get("servings")) || 1,
-        authorId: authorId,
-        ingredients: ingredients,
-        steps: steps,
-      }),
-    });
+    setSaving(true);
 
-    if (res.ok) {
+    try {
+      const userRes = await fetch("/api/getUserId", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: userEmail }),
+      });
+
+      if (!userRes.ok) {
+        setError(
+          "Nie udało się znaleźć Twojego konta. Odśwież stronę i spróbuj ponownie.",
+        );
+        return;
+      }
+
+      const userData = await userRes.json();
+      const authorId = userData.id;
+
+      const res = await fetch("/api/addRecipe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: formData.get("recipeTitle"),
+          description: formData.get("summary"),
+          image: imageBase64,
+          calories: Number(formData.get("calories")) || undefined,
+          protein: Number(formData.get("protein")) || undefined,
+          time: Number(formData.get("prepTime")) || undefined,
+          servings: Number(formData.get("servings")) || 1,
+          authorId: authorId,
+          ingredients: ingredients,
+          steps: steps,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        setError(data?.message || "Nie udało się zapisać przepisu.");
+        return;
+      }
+
       router.push("/");
-    } else {
-      alert("Failed to add recipe");
+    } catch (error) {
+      console.error("Błąd dodawania przepisu:", error);
+      setError("Wystąpił problem z połączeniem. Spróbuj ponownie.");
+    } finally {
+      setSaving(false);
     }
   };
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
+      {error && (
+        <div className={styles.error} role="alert">
+          <strong>Nie udało się zapisać przepisu</strong>
+          <p>{error}</p>
+        </div>
+      )}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Podstawowe Informacje</h2>
 
@@ -86,12 +155,14 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
             Tytuł Przepisu
           </label>
           <input
-            className={styles.input}
+            className={`${styles.input} ${fieldErrors.title ? styles.inputError : ""}`}
             type="text"
             id="recipeTitle"
             name="recipeTitle"
             placeholder="np. Spaghetti Carbonara"
+            aria-invalid={Boolean(fieldErrors.title)}
           />
+          {fieldErrors.title && <p className={styles.fieldError}>{fieldErrors.title}</p>}
         </div>
 
         <div className={styles.fieldGroup}>
@@ -99,11 +170,13 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
             Krótki Opis
           </label>
           <textarea
-            className={styles.textarea}
+            className={`${styles.textarea} ${fieldErrors.summary ? styles.inputError : ""}`}
             id="summary"
             name="summary"
             placeholder="Krótki opis Twojego przepisu..."
+            aria-invalid={Boolean(fieldErrors.summary)}
           />
+          {fieldErrors.summary && <p className={styles.fieldError}>{fieldErrors.summary}</p>}
         </div>
 
         <div className={styles.fieldGroup}>
@@ -118,6 +191,7 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
             accept="image/*"
             onChange={handleImageChange}
           />
+          {fieldErrors.image && <p className={styles.fieldError}>{fieldErrors.image}</p>}
           {imagePreview && (
             <div className={styles.imagePreview}>
               <img src={imagePreview} alt="Preview" />
@@ -131,12 +205,16 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
               Czas Przygotowania (minuty)
             </label>
             <input
-              className={styles.input}
+              className={`${styles.input} ${fieldErrors.prepTime ? styles.inputError : ""}`}
               type="number"
               id="prepTime"
               name="prepTime"
               placeholder="30"
+              min="0"
+              step="1"
+              aria-invalid={Boolean(fieldErrors.prepTime)}
             />
+            {fieldErrors.prepTime && <p className={styles.fieldError}>{fieldErrors.prepTime}</p>}
           </div>
 
           <div className={styles.fieldGroup}>
@@ -144,14 +222,16 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
               Porcje
             </label>
             <input
-              className={styles.input}
+              className={`${styles.input} ${fieldErrors.servings ? styles.inputError : ""}`}
               type="number"
               min="1"
               step="1"
               id="servings"
               name="servings"
               placeholder="4"
+              aria-invalid={Boolean(fieldErrors.servings)}
             />
+            {fieldErrors.servings && <p className={styles.fieldError}>{fieldErrors.servings}</p>}
           </div>
         </div>
       </section>
@@ -159,6 +239,7 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
       <IngredientsSection
         ingredients={ingredients}
         setIngredients={setIngredients}
+        error={fieldErrors.ingredients}
       />
 
       <section className={styles.calorieSection}>
@@ -190,14 +271,16 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
               Kalorie całego przepisu
             </label>
             <input
-              className={styles.input}
+              className={`${styles.input} ${fieldErrors.calories ? styles.inputError : ""}`}
               type="number"
               min="0"
               step="0.1"
               id="calories"
               name="calories"
               placeholder="np. 1200"
+              aria-invalid={Boolean(fieldErrors.calories)}
             />
+            {fieldErrors.calories && <p className={styles.fieldError}>{fieldErrors.calories}</p>}
           </div>
 
           <div className={styles.fieldGroup}>
@@ -205,23 +288,25 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
               Białko całego przepisu
             </label>
             <input
-              className={styles.input}
+              className={`${styles.input} ${fieldErrors.protein ? styles.inputError : ""}`}
               type="number"
               min="0"
               step="0.1"
               id="protein"
               name="protein"
               placeholder="np. 60"
+              aria-invalid={Boolean(fieldErrors.protein)}
             />
+            {fieldErrors.protein && <p className={styles.fieldError}>{fieldErrors.protein}</p>}
           </div>
         </div>
       </section>
 
-      <StepsSection steps={steps} setSteps={setSteps} />
+      <StepsSection steps={steps} setSteps={setSteps} error={fieldErrors.steps} />
 
       <div className={styles.formActions}>
-        <button type="submit" className={styles.submitButton}>
-          Zapisz Przepis
+        <button type="submit" className={styles.submitButton} disabled={saving}>
+          {saving ? "Zapisywanie..." : "Zapisz Przepis"}
         </button>
       </div>
     </form>

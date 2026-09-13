@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import styles from "./favoriteButton.module.scss";
 
 export function FavoriteButton({
   recipeId,
@@ -11,10 +12,12 @@ export function FavoriteButton({
 }) {
   const [favorite, setFavorite] = useState(isFavorite);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleFavorite() {
     try {
       setLoading(true);
+      setError("");
 
       const response = await fetch("/api/favorites", {
         method: "POST",
@@ -27,20 +30,26 @@ export function FavoriteButton({
       });
 
       if (!response.ok) {
-        throw new Error("Nie udało się zmienić ulubionego");
+        const data = await response.json().catch(() => null);
+        setError(data?.message || "Nie udało się zmienić ulubionych.");
+        return;
       }
 
       setFavorite((prev) => !prev);
     } catch (error) {
       console.error(error);
+      setError("Wystąpił problem z połączeniem. Spróbuj ponownie.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <button onClick={handleFavorite} disabled={loading}>
-      {favorite ? "Usuń z ulubionych" : "Dodaj do ulubionych"}
-    </button>
+    <div className={styles.wrapper}>
+      <button onClick={handleFavorite} disabled={loading}>
+        {favorite ? "Usuń z ulubionych" : "Dodaj do ulubionych"}
+      </button>
+      {error && <p className={styles.error} role="alert">{error}</p>}
+    </div>
   );
 }

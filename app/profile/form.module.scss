@@ -81,6 +81,24 @@
   width: 100%;
   max-width: 420px;
 
+  .error {
+    margin: 0;
+    padding: 0.85rem 1rem;
+    border: 1px solid #f2a7b9;
+    border-radius: 12px;
+    background: #fff5f6;
+    color: #9f1239;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .fieldError {
+    margin: -0.5rem 0 0;
+    color: #be123c;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
   button {
     align-self: flex-start;
 
@@ -101,6 +119,11 @@
     &:hover {
       background: #ec4899;
       color: white;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
   }
 }
@@ -143,6 +166,11 @@
       color: #9ca3af;
     }
   }
+}
+
+.inputError {
+  border-color: #e11d48 !important;
+  background: #fff5f6 !important;
 }
 
 .imagePreview {

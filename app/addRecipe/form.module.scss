@@ -4,6 +4,38 @@
   gap: 2rem;
 }
 
+.error {
+  padding: 1rem 1.25rem;
+  border: 1px solid #f2a7b9;
+  border-radius: 16px;
+  background: #fff5f6;
+  color: #9f1239;
+  box-shadow: 0 10px 24px rgba(159, 18, 57, 0.08);
+
+  strong {
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    margin: 0;
+    color: #be123c;
+    line-height: 1.5;
+  }
+}
+
+.fieldError {
+  margin: -0.2rem 0 0;
+  color: #be123c;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.inputError {
+  border-color: #e11d48;
+  background: #fff5f6;
+}
+
 .section {
   background: white;
   padding: 2rem;
@@ -166,6 +198,13 @@
 
   &:active {
     transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 }
 

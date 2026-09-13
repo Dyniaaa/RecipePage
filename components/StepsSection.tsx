@@ -11,9 +11,11 @@ interface Step {
 export default function StepsSection({
   steps,
   setSteps,
+  error,
 }: {
   steps: Step[];
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
+  error?: string;
 }) {
   const handleAddStep = () => {
     const newId = Date.now().toString();
@@ -57,6 +59,8 @@ export default function StepsSection({
           </div>
         ))}
       </div>
+
+      {error && <p className={styles.error} role="alert">{error}</p>}
 
       <button
         className={styles.addButton}

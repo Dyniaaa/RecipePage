@@ -18,6 +18,11 @@ model User {
   recipes   Recipe[]
   favorites Favorite[]
   comments  Comment[]
+
+  emailVerified      DateTime?
+  verificationToken  String?   @unique
+  verificationExpiry DateTime?
+
 }
 
 model Recipe {

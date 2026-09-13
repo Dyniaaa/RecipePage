@@ -4,18 +4,46 @@ import { useState, useEffect } from "react";
 import RecipesMap from "@/components/recipesMap";
 import styles from "./page.module.scss";
 
+type Recipe = {
+  id: string;
+  title: string;
+  description?: string | null;
+  image?: string | null;
+  time?: number;
+  servings?: number;
+  calories?: number | null;
+};
+
 export default function Home() {
   const [searchQuery, setQuery] = useState("");
-  const [recipes, setRecipes] = useState([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const res = await fetch(`/api/recipes?search=${searchQuery}`);
-      const data = await res.json();
-      setRecipes(data);
-      setLoading(false);
+      setError("");
+      try {
+        const res = await fetch(
+          `/api/recipes?search=${encodeURIComponent(searchQuery)}`,
+        );
+
+        if (!res.ok) {
+          setError("Nie udało się pobrać przepisów. Spróbuj ponownie.");
+          setRecipes([]);
+          return;
+        }
+
+        const data = await res.json();
+        setRecipes(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Błąd pobierania przepisów:", error);
+        setError("Nie udało się połączyć z serwerem. Spróbuj ponownie.");
+        setRecipes([]);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
@@ -33,6 +61,11 @@ export default function Home() {
         />
         {loading ? (
           <div className={styles.loader}></div>
+        ) : error ? (
+          <div className={styles.error} role="alert">
+            <strong>Coś poszło nie tak</strong>
+            <p>{error}</p>
+          </div>
         ) : recipes.length === 0 ? (
           <div className={styles.noResults}>
             <svg

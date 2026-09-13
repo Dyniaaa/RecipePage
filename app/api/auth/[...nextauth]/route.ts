@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
+    maxAge: 60,
   },
 
   pages: {
@@ -76,6 +77,10 @@ export const authOptions: NextAuthOptions = {
 
         if (!passwordCorrect) {
           return null;
+        }
+
+        if (!user.emailVerified) {
+          throw new Error("EMAIL_NOT_VERIFIED");
         }
 
         return {

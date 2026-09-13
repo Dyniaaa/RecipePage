@@ -5,6 +5,7 @@ import styles from "./form.module.scss";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { validateEmail, validateRequired, type FieldErrors } from "@/lib/validation";
 
 export default function ProfileForm() {
   const router = useRouter();
@@ -12,6 +13,9 @@ export default function ProfileForm() {
   const [edit, setEdit] = useState(true);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [saving, setSaving] = useState(false);
 
   const FirstLetter = (n: string) => n.slice(0, 1).toUpperCase();
 
@@ -19,6 +23,19 @@ export default function ProfileForm() {
     const file = e.target.files?.[0];
 
     if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setFieldErrors((current) => ({ ...current, image: "Wybierz plik graficzny." }));
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setFieldErrors((current) => ({
+        ...current,
+        image: "Zdjęcie może mieć maksymalnie 5 MB.",
+      }));
+      return;
+    }
+    setFieldErrors((current) => ({ ...current, image: "" }));
 
     const img = document.createElement("img");
 
@@ -53,39 +70,59 @@ export default function ProfileForm() {
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
+    setSaving(true);
 
-    const formData = new FormData(e.currentTarget);
+    try {
+      const formData = new FormData(e.currentTarget);
+      const name = String(formData.get("name") || "").trim();
+      const email = String(formData.get("email") || "");
+      const nextFieldErrors: FieldErrors = {
+        name: validateRequired(name, "Imię"),
+        email: validateEmail(email),
+        image: fieldErrors.image || "",
+      };
 
-    console.log("imageSize:", imageBase64?.length);
+      if (name.length > 0 && name.length < 2) {
+        nextFieldErrors.name = "Imię musi mieć co najmniej 2 znaki.";
+      }
+      setFieldErrors(nextFieldErrors);
+      if (Object.values(nextFieldErrors).some(Boolean)) return;
 
-    const res = await fetch("/api/profile", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: session?.user?.id,
-        name: formData.get("name"),
-        email: formData.get("email"),
-        image: imageBase64,
-      }),
-    });
+      const res = await fetch("/api/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: session?.user?.id,
+          name,
+          email,
+          image: imageBase64,
+        }),
+      });
 
-    const data = await res.json();
+      const data = await res.json().catch(() => null);
 
-    if (!res.ok) {
-      console.error(data);
-      return;
+      if (!res.ok) {
+        setError(data?.error || "Nie udało się zapisać zmian profilu.");
+        return;
+      }
+
+      await update({
+        name: data.name,
+        email: data.email,
+        image: data.image,
+      });
+
+      setEdit(true);
+      router.refresh();
+    } catch (error) {
+      console.error("Błąd aktualizacji profilu:", error);
+      setError("Wystąpił problem z połączeniem. Spróbuj ponownie.");
+    } finally {
+      setSaving(false);
     }
-
-    await update({
-      name: data.name,
-      email: data.email,
-      image: data.image,
-    });
-
-    setEdit(true);
-    router.refresh();
   };
 
   return (
@@ -134,6 +171,7 @@ export default function ProfileForm() {
         </div>
       ) : (
         <form className={styles.editForm} onSubmit={handleSubmit}>
+          {error && <p className={styles.error} role="alert">{error}</p>}
           <label className={styles.label} htmlFor="recipeImage">
             Zdjęcie Przepisu
           </label>
@@ -145,6 +183,7 @@ export default function ProfileForm() {
             accept="image/*"
             onChange={handleImageChange}
           />
+          {fieldErrors.image && <p className={styles.fieldError}>{fieldErrors.image}</p>}
           {imagePreview && (
             <div className={styles.imagePreview}>
               <img src={imagePreview} alt="Preview" />
@@ -154,24 +193,30 @@ export default function ProfileForm() {
           <div className={styles.formGroup}>
             <label htmlFor="name">Name</label>
             <input
+              className={fieldErrors.name ? styles.inputError : ""}
               type="text"
               id="name"
               name="name"
               defaultValue={session?.user?.name || ""}
             />
+            {fieldErrors.name && <p className={styles.fieldError}>{fieldErrors.name}</p>}
           </div>
 
           <div className={styles.formGroup}>
             <label htmlFor="email">Email</label>
             <input
+              className={fieldErrors.email ? styles.inputError : ""}
               type="email"
               id="email"
               name="email"
               defaultValue={session?.user?.email || ""}
             />
+            {fieldErrors.email && <p className={styles.fieldError}>{fieldErrors.email}</p>}
           </div>
 
-          <button type="submit">Save Changes</button>
+          <button type="submit" disabled={saving}>
+            {saving ? "Saving..." : "Save Changes"}
+          </button>
         </form>
       )}
     </section>

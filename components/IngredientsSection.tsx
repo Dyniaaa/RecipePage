@@ -11,9 +11,11 @@ interface Ingredient {
 export default function IngredientsSection({
   ingredients,
   setIngredients,
+  error,
 }: {
   ingredients: Ingredient[];
   setIngredients: React.Dispatch<React.SetStateAction<Ingredient[]>>;
+  error?: string;
 }) {
   const handleAddIngredient = () => {
     const newId = Date.now().toString();
@@ -80,6 +82,8 @@ export default function IngredientsSection({
           )}
         </div>
       ))}
+
+      {error && <p className={styles.error} role="alert">{error}</p>}
 
       <button
         className={styles.addButton}
