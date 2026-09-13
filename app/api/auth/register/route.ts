@@ -33,7 +33,7 @@ export async function POST(req: Request) {
       verificationExpiry,
     );
 
-    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verifyEmail?token=${verificationToken}`;
+    const verificationUrl = `${process.env.APP_URL}/verifyEmail?token=${verificationToken}`;
 
     const emailResult = await resend.emails.send({
       from: "Happy Avocado <onboarding@resend.dev>",
