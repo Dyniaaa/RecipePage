@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     const verificationUrl = `${process.env.APP_URL}/verifyEmail?token=${verificationToken}`;
 
     const emailResult = await resend.emails.send({
-      from: "Happy Avocado <onboarding@resend.dev>",
+      from: "Happy Avocado <noreply@happyavocado.pl>",
       to: email,
       subject: "🥑 Potwierdź swoje konto w Happy Avocado",
       html: `
