@@ -21,4 +21,3 @@ A recipe management web application built with Next.js.
 
 ## Live Demo
 
-https://happyavocado.pl
