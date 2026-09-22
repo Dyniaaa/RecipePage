@@ -1,0 +1,14 @@
+# Netlify configuration
+#
+# Note: the build command and publish directory are configured in the Netlify UI
+# and are intentionally not set here so this file does not override them.
+
+[build.environment]
+  # APP_URL holds the site's own public address. It is documented in README.md
+  # ("Live Demo") and is used to build absolute links in outgoing email, so its
+  # value legitimately appears in repo files and build output.
+  #
+  # It is public by nature, so it is exempted from secrets scanning. Scanning
+  # stays enabled for every other variable, including DATABASE_URL,
+  # NEXTAUTH_SECRET and RESEND_API_KEY.
+  SECRETS_SCAN_OMIT_KEYS = "APP_URL"
