@@ -1,12 +1,31 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 0.6rem;
 }
 
 .favoriteButton {
+  padding: 8px 12px;
+  border: 1px solid #ff4f9a;
+  border-radius: 7px;
+  background: white;
+  color: #ff4f9a;
+  font-size: 0.95rem;
   cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+
+  &:hover {
+    background: #fff0f8;
+  }
+
+  &.active {
+    background: #ff4f9a;
+    color: white;
+  }
 
   &:disabled {
     cursor: not-allowed;
@@ -21,6 +40,6 @@
   border-radius: 10px;
   background: #fff5f6;
   color: #9f1239;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   line-height: 1.4;
 }

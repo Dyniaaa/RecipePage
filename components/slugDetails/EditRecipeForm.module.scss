@@ -88,6 +88,22 @@
   object-fit: cover;
 }
 
+.imageSection {
+  padding-bottom: 1rem;
+  background: #fff;
+}
+
+.imageLabel {
+  display: block;
+  margin: 1rem 22px 0.5rem;
+}
+
+.imageInput {
+  width: calc(100% - 44px) !important;
+  margin: 0 22px !important;
+  box-sizing: border-box;
+}
+
 .info {
   padding: 20px 22px 10px;
   display: flex;
@@ -185,5 +201,23 @@
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+  }
+}
+
+.spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #fff;
+  border-radius: 50%;
+  vertical-align: -0.15rem;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }

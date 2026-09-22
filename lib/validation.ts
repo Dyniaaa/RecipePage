@@ -13,12 +13,24 @@ export function validateRequired(value: string, label: string) {
   return "";
 }
 
+export function validatePassword(value: string) {
+  if (!value) return "Hasło jest wymagane.";
+  if (value.length < 6) return "Hasło musi mieć co najmniej 6 znaków.";
+  if (!/[A-ZĄĆĘŁŃÓŚŹŻ]/.test(value)) {
+    return "Hasło musi zawierać co najmniej jedną wielką literę.";
+  }
+  if (!/[^a-zA-Z0-9ĄĆĘŁŃÓŚŹŻąćęłńóśźż]/.test(value)) {
+    return "Hasło musi zawierać co najmniej jeden znak specjalny.";
+  }
+  return "";
+}
+
 export function validateNumber(
   value: string,
   label: string,
-  options: { min?: number; integer?: boolean } = {},
+  options: { min?: number; integer?: boolean; required?: boolean } = {},
 ) {
-  if (!value.trim()) return "";
+  if (!value.trim()) return options.required ? `${label} jest wymagane.` : "";
 
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return `${label} musi być liczbą.`;

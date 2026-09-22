@@ -23,24 +23,20 @@ export default function Navigation({ session }: { session: Session | null }) {
         </Link>
 
         <div className={styles.actions}>
-          <a href="/profile" className={styles.user}>
-            <span className={styles.userIcon} aria-hidden="true">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="7" r="4" />
-                <path d="M20 21a8 8 0 0 0-16 0" />
-              </svg>
-            </span>
+          <Link href="/profile" className={styles.user}>
+            {session?.user?.image ? (
+              <img
+                className={styles.userAvatar}
+                src={session.user.image}
+                alt=""
+              />
+            ) : (
+              <span className={styles.userAvatarFallback} aria-hidden="true">
+                {userName.trim().charAt(0).toUpperCase() || "?"}
+              </span>
+            )}
             {formatNick(userName)}
-          </a>
+          </Link>
 
           <Link href="/addRecipe" className={styles.button}>
             <svg

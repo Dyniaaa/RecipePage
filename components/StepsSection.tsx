@@ -12,10 +12,12 @@ export default function StepsSection({
   steps,
   setSteps,
   error,
+  disabled = false,
 }: {
   steps: Step[];
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
   error?: string;
+  disabled?: boolean;
 }) {
   const handleAddStep = () => {
     const newId = Date.now().toString();
@@ -41,7 +43,7 @@ export default function StepsSection({
           <div className={styles.stepRow} key={step.id}>
             <div className={styles.stepNumber}>{index + 1}</div>
             <textarea
-              className={styles.textarea}
+              className={`${styles.textarea} ${error && !step.text.trim() ? styles.inputError : ""}`}
               placeholder={`Opisz krok ${index + 1}...`}
               value={step.text}
               onChange={(e) => handleStepChange(step.id, e.target.value)}
@@ -51,6 +53,7 @@ export default function StepsSection({
                 className={styles.removeButton}
                 type="button"
                 onClick={() => handleRemoveStep(step.id)}
+                disabled={disabled}
                 title="Usuń krok"
               >
                 ×
@@ -66,6 +69,7 @@ export default function StepsSection({
         className={styles.addButton}
         type="button"
         onClick={handleAddStep}
+        disabled={disabled}
       >
         <span className={styles.plus}>+</span> Dodaj Krok
       </button>

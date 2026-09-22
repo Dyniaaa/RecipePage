@@ -5,6 +5,11 @@ import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { createUser } from "@/lib/user";
 import { resend } from "@/lib/resend";
+import {
+  validateEmail,
+  validatePassword,
+  validateRequired,
+} from "@/lib/validation";
 
 export async function POST(req: Request) {
   try {
@@ -12,9 +17,13 @@ export async function POST(req: Request) {
 
     const { name, email, password } = body;
 
-    if (!name || !email || !password) {
+    const nameError = validateRequired(String(name || "").trim(), "Imię");
+    const emailError = validateEmail(String(email || ""));
+    const passwordError = validatePassword(String(password || ""));
+
+    if (nameError || emailError || passwordError) {
       return NextResponse.json(
-        { message: "Brak wymaganych pól" },
+        { message: nameError || emailError || passwordError },
         { status: 400 },
       );
     }

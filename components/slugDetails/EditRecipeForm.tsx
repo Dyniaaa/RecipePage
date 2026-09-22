@@ -22,6 +22,8 @@ export default function EditRecipeForm({
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [imagePreview, setImagePreview] = useState("/placeholder.jpg");
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [time, setTime] = useState(0);
   const [servings, setServings] = useState(1);
   const [calories, setCalories] = useState(0);
@@ -41,6 +43,8 @@ export default function EditRecipeForm({
     if (recipe) {
       setTitle(recipe.title);
       setDescription(recipe.description ?? "");
+      setImagePreview(recipe.image || "/placeholder.jpg");
+      setImageBase64(null);
       setTime(recipe.time ?? 0);
       setServings(recipe.servings ?? 1);
       setCalories(recipe.calories ?? 0);
@@ -51,6 +55,38 @@ export default function EditRecipeForm({
     }
   }, [recipe]);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setFieldErrors((current) => ({
+        ...current,
+        image: "Wybierz plik graficzny.",
+      }));
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setFieldErrors((current) => ({
+        ...current,
+        image: "Zdjęcie może mieć maksymalnie 5 MB.",
+      }));
+      return;
+    }
+
+    setFieldErrors((current) => ({ ...current, image: "" }));
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result as string;
+      setImagePreview(base64);
+      setImageBase64(base64);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
@@ -58,18 +94,23 @@ export default function EditRecipeForm({
     const nextFieldErrors: FieldErrors = {
       title: validateRequired(title, "Tytuł przepisu"),
       description: validateRequired(description, "Opis przepisu"),
-      time: validateNumber(String(time), "Czas przygotowania", { min: 0, integer: true }),
-      servings: validateNumber(String(servings), "Liczba porcji", { min: 1, integer: true }),
-      calories: validateNumber(String(calories), "Kalorie", { min: 0 }),
-      protein: validateNumber(String(protein), "Białko", { min: 0 }),
+      time: validateNumber(String(time), "Czas przygotowania", { min: 0, integer: true, required: true }),
+      servings: validateNumber(String(servings), "Liczba porcji", { min: 1, integer: true, required: true }),
+      calories: validateNumber(String(calories), "Kalorie", { min: 0, required: true }),
+      protein: validateNumber(String(protein), "Białko", { min: 0, required: true }),
+      image: fieldErrors.image || (imageBase64 || recipe.image ? "" : "Zdjęcie przepisu jest wymagane."),
       ingredients: "",
       steps: "",
     };
 
-    if (ingredients.some((ingredient) => !ingredient.name.trim() || !ingredient.amount.trim())) {
+    if (!ingredients.length) {
+      nextFieldErrors.ingredients = "Dodaj co najmniej jeden składnik.";
+    } else if (ingredients.some((ingredient) => !ingredient.name.trim() || !ingredient.amount.trim())) {
       nextFieldErrors.ingredients = "Uzupełnij nazwę i ilość każdego składnika.";
     }
-    if (steps.some((step) => !step.text.trim())) {
+    if (!steps.length) {
+      nextFieldErrors.steps = "Dodaj co najmniej jeden krok przygotowania.";
+    } else if (steps.some((step) => !step.text.trim())) {
       nextFieldErrors.steps = "Uzupełnij treść każdego kroku przygotowania.";
     }
 
@@ -84,6 +125,7 @@ export default function EditRecipeForm({
       servings,
       calories,
       protein,
+      image: imageBase64 ?? recipe.image ?? undefined,
       ingredients,
       steps,
     };
@@ -125,11 +167,23 @@ export default function EditRecipeForm({
         </div>
       )}
       <div className={styles.recipe}>
-        <img
-          src={recipe.image || "/placeholder.jpg"}
-          alt={recipe.title}
-          className={styles.image}
-        />
+        <div className={styles.imageSection}>
+          <img src={imagePreview} alt="Podgląd zdjęcia przepisu" className={styles.image} />
+          <label className={styles.imageLabel} htmlFor="recipeImage">
+            Zmień zdjęcie przepisu
+          </label>
+          <input
+            className={`${styles.imageInput} ${fieldErrors.image ? styles.inputError : ""}`}
+            type="file"
+            id="recipeImage"
+            name="recipeImage"
+            accept="image/*"
+            onChange={handleImageChange}
+            disabled={saving}
+            aria-invalid={Boolean(fieldErrors.image)}
+          />
+          {fieldErrors.image && <p className={styles.fieldError}>{fieldErrors.image}</p>}
+        </div>
         <div className={styles.info}>
           <label>Tytuł:</label>
           <input
@@ -175,7 +229,8 @@ export default function EditRecipeForm({
             className={fieldErrors.calories ? styles.inputError : ""}
             type="number"
             min="0"
-            value={calories}
+              step="0.1"
+              value={calories}
             onChange={(e) => setCalories(Number(e.target.value))}
             aria-invalid={Boolean(fieldErrors.calories)}
           />
@@ -185,6 +240,7 @@ export default function EditRecipeForm({
           ingredients={ingredients}
           setIngredients={setIngredients}
           error={fieldErrors.ingredients}
+          disabled={saving}
         />
         <div className={`${styles.card} ${styles.nutritionCard}`}>
           <p className={styles.cardTitle}>Wartości odżywcze</p>
@@ -195,6 +251,7 @@ export default function EditRecipeForm({
                 className={fieldErrors.calories ? styles.inputError : ""}
                 type="number"
                 min="0"
+                step="0.1"
                 value={calories}
                 onChange={(e) => setCalories(Number(e.target.value))}
               />
@@ -213,10 +270,16 @@ export default function EditRecipeForm({
             </li>
           </ul>
         </div>
-        <StepsSection steps={steps} setSteps={setSteps} error={fieldErrors.steps} />
+        <StepsSection
+          steps={steps}
+          setSteps={setSteps}
+          error={fieldErrors.steps}
+          disabled={saving}
+        />
       </div>
 
       <button type="submit" className={styles.saveButton} disabled={saving}>
+        {saving && <span className={styles.spinner} aria-hidden="true" />}
         {saving ? "Zapisywanie..." : "Zapisz zmiany"}
       </button>
     </form>

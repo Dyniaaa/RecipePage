@@ -4,10 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { FormEvent } from "react";
+import Link from "next/link";
 import styles from "./form.module.scss";
 import Image from "next/image";
 import logo from "@/public/logo.png";
-import { validateEmail, validateRequired, type FieldErrors } from "@/lib/validation";
+import { validateEmail, validatePassword, type FieldErrors } from "@/lib/validation";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function LoginForm() {
     const password = String(formData.get("password") || "");
     const nextFieldErrors = {
       email: validateEmail(email),
-      password: validateRequired(password, "Hasło"),
+      password: validatePassword(password),
     };
 
     setFieldErrors(nextFieldErrors);
@@ -92,7 +93,7 @@ export default function LoginForm() {
           type="email"
           placeholder="Email"
           name="email"
-          required
+          aria-invalid={Boolean(fieldErrors.email)}
         />
         {fieldErrors.email && <p className={styles.fieldError}>{fieldErrors.email}</p>}
       </div>
@@ -108,7 +109,7 @@ export default function LoginForm() {
           type="password"
           placeholder="Enter your password"
           name="password"
-          required
+          aria-invalid={Boolean(fieldErrors.password)}
         />
         {fieldErrors.password && <p className={styles.fieldError}>{fieldErrors.password}</p>}
       </div>
@@ -118,10 +119,10 @@ export default function LoginForm() {
       </button>
 
       <p className={styles.footerText}>
-        Don't have an account?{" "}
-        <a className={styles.link} href="/register">
+        Don&apos;t have an account?{" "}
+        <Link className={styles.link} href="/register">
           Register
-        </a>
+        </Link>
       </p>
     </form>
   );

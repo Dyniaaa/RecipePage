@@ -58,12 +58,29 @@
   }
 }
 
-.userIcon {
+.userAvatar,
+.userAvatarFallback {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 30px;
   height: 30px;
+  flex: 0 0 30px;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.userAvatar {
+  object-fit: cover;
+  border: 2px solid #ff2a86;
+}
+
+.userAvatarFallback {
+  border: 2px solid #ff2a86;
+  background: #fff0f8;
+  color: #d71969;
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .button,
@@ -142,9 +159,11 @@
     gap: 0rem;
   }
 
-  .userIcon {
+  .userAvatar,
+  .userAvatarFallback {
     width: 28px;
     height: 28px;
+    flex-basis: 28px;
   }
 
   .button,

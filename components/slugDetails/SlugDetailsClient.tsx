@@ -22,10 +22,12 @@ export default function SlugDetailsClient({
           ← Powrót do przepisów
         </Link>
 
-        <div>
+        <div className={styles.headerActions}>
           <FavoriteButton recipeId={recipe.id} isFavorite={isFavorite} />
 
-          <button onClick={() => setEdit(!edit)}>Edytuj przepis</button>
+          <button className={styles.editButton} onClick={() => setEdit(!edit)}>
+            Edytuj przepis
+          </button>
         </div>
       </header>
 
@@ -45,7 +47,7 @@ export default function SlugDetailsClient({
           <div className={styles.stats}>
             <p className={styles.stat}>{recipe.time ?? 0} min</p>
             <p className={styles.stat}>{recipe.servings} porcji</p>
-            <p className={styles.stat}>{recipe.calories ?? 0} kcal</p>
+            <p className={styles.stat}>{Number(recipe.calories ?? 0).toFixed(1)} kcal</p>
           </div>
 
           <div className={styles.content}>
@@ -68,7 +70,7 @@ export default function SlugDetailsClient({
 
               <ul className={styles.nutritionList}>
                 <li>
-                  Kalorie: <span>{recipe.calories ?? 0} kcal</span>
+                  Kalorie: <span>{Number(recipe.calories ?? 0).toFixed(1)} kcal</span>
                 </li>
 
                 <li>

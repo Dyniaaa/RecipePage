@@ -17,7 +17,13 @@ export default function RecipesMap({ recipes }: { recipes: any[] }) {
 
             <div className={styles.content}>
               <h2 className={styles.title}>{recipe.title}</h2>
-              <p className={styles.description}>{recipe.description}</p>
+              <p className={styles.description}>
+                {recipe.description
+                  ? recipe.description.length > 100
+                    ? `${recipe.description.slice(0, 100).trimEnd()}...`
+                    : recipe.description
+                  : ""}
+              </p>
 
               <div className={styles.meta}>
                 <span>⏱ {recipe.time ?? 0} min</span>
@@ -26,7 +32,7 @@ export default function RecipesMap({ recipes }: { recipes: any[] }) {
 
               <div className={styles.calories}>
                 {recipe.calories && recipe.servings
-                  ? recipe.calories / recipe.servings
+                  ? (recipe.calories / recipe.servings).toFixed(1)
                   : 0}{" "}
                 cal per serving
               </div>

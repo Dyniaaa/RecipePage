@@ -46,7 +46,12 @@ export function FavoriteButton({
 
   return (
     <div className={styles.wrapper}>
-      <button onClick={handleFavorite} disabled={loading} className={styles.favoriteButton}>
+      <button
+        type="button"
+        onClick={handleFavorite}
+        disabled={loading}
+        className={`${styles.favoriteButton} ${favorite ? styles.active : ""}`}
+      >
         {favorite ? "Usuń z ulubionych" : "Dodaj do ulubionych"}
       </button>
       {error && <p className={styles.error} role="alert">{error}</p>}

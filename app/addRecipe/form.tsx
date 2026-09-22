@@ -65,19 +65,23 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
     const nextFieldErrors: FieldErrors = {
       title: validateRequired(title, "Tytuł przepisu"),
       summary: validateRequired(summary, "Opis przepisu"),
-      prepTime: validateNumber(prepTime, "Czas przygotowania", { min: 0, integer: true }),
-      servings: validateNumber(servings, "Liczba porcji", { min: 1, integer: true }),
-      calories: validateNumber(calories, "Kalorie", { min: 0 }),
-      protein: validateNumber(protein, "Białko", { min: 0 }),
-      image: fieldErrors.image || "",
+      prepTime: validateNumber(prepTime, "Czas przygotowania", { min: 0, integer: true, required: true }),
+      servings: validateNumber(servings, "Liczba porcji", { min: 1, integer: true, required: true }),
+      calories: validateNumber(calories, "Kalorie", { min: 0, required: true }),
+      protein: validateNumber(protein, "Białko", { min: 0, required: true }),
+      image: fieldErrors.image || (imageBase64 ? "" : "Zdjęcie przepisu jest wymagane."),
       ingredients: "",
       steps: "",
     };
 
-    if (ingredients.some((ingredient) => !ingredient.name.trim() || !ingredient.amount.trim())) {
+    if (!ingredients.length) {
+      nextFieldErrors.ingredients = "Dodaj co najmniej jeden składnik.";
+    } else if (ingredients.some((ingredient) => !ingredient.name.trim() || !ingredient.amount.trim())) {
       nextFieldErrors.ingredients = "Uzupełnij nazwę i ilość każdego składnika.";
     }
-    if (steps.some((step) => !step.text.trim())) {
+    if (!steps.length) {
+      nextFieldErrors.steps = "Dodaj co najmniej jeden krok przygotowania.";
+    } else if (steps.some((step) => !step.text.trim())) {
       nextFieldErrors.steps = "Uzupełnij treść każdego kroku przygotowania.";
     }
 
@@ -184,12 +188,13 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
             Zdjęcie Przepisu
           </label>
           <input
-            className={styles.input}
+            className={`${styles.input} ${fieldErrors.image ? styles.inputError : ""}`}
             type="file"
             id="recipeImage"
             name="recipeImage"
             accept="image/*"
             onChange={handleImageChange}
+            disabled={saving}
           />
           {fieldErrors.image && <p className={styles.fieldError}>{fieldErrors.image}</p>}
           {imagePreview && (
@@ -211,7 +216,7 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
               name="prepTime"
               placeholder="30"
               min="0"
-              step="1"
+              step="0.1"
               aria-invalid={Boolean(fieldErrors.prepTime)}
             />
             {fieldErrors.prepTime && <p className={styles.fieldError}>{fieldErrors.prepTime}</p>}
@@ -240,6 +245,7 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
         ingredients={ingredients}
         setIngredients={setIngredients}
         error={fieldErrors.ingredients}
+        disabled={saving}
       />
 
       <section className={styles.calorieSection}>
@@ -274,7 +280,7 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
               className={`${styles.input} ${fieldErrors.calories ? styles.inputError : ""}`}
               type="number"
               min="0"
-              step="0.1"
+              step="1"
               id="calories"
               name="calories"
               placeholder="np. 1200"
@@ -302,10 +308,16 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
         </div>
       </section>
 
-      <StepsSection steps={steps} setSteps={setSteps} error={fieldErrors.steps} />
+      <StepsSection
+        steps={steps}
+        setSteps={setSteps}
+        error={fieldErrors.steps}
+        disabled={saving}
+      />
 
       <div className={styles.formActions}>
         <button type="submit" className={styles.submitButton} disabled={saving}>
+          {saving && <span className={styles.spinner} aria-hidden="true" />}
           {saving ? "Zapisywanie..." : "Zapisz Przepis"}
         </button>
       </div>

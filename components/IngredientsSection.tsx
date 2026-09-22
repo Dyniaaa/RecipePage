@@ -12,10 +12,12 @@ export default function IngredientsSection({
   ingredients,
   setIngredients,
   error,
+  disabled = false,
 }: {
   ingredients: Ingredient[];
   setIngredients: React.Dispatch<React.SetStateAction<Ingredient[]>>;
   error?: string;
+  disabled?: boolean;
 }) {
   const handleAddIngredient = () => {
     const newId = Date.now().toString();
@@ -53,7 +55,7 @@ export default function IngredientsSection({
       {ingredients.map((ingredient) => (
         <div className={styles.ingredientRow} key={ingredient.id}>
           <input
-            className={styles.input}
+            className={`${styles.input} ${error && !ingredient.name.trim() ? styles.inputError : ""}`}
             type="text"
             placeholder="Nazwa składnika"
             value={ingredient.name}
@@ -62,7 +64,7 @@ export default function IngredientsSection({
             }
           />
           <input
-            className={styles.input}
+            className={`${styles.input} ${error && !ingredient.amount.trim() ? styles.inputError : ""}`}
             type="text"
             placeholder="Ilość (np. 200g, 1 szklanka)"
             value={ingredient.amount}
@@ -75,6 +77,7 @@ export default function IngredientsSection({
               className={styles.removeButton}
               type="button"
               onClick={() => handleRemoveIngredient(ingredient.id)}
+              disabled={disabled}
               title="Usuń składnik"
             >
               ×
@@ -89,6 +92,7 @@ export default function IngredientsSection({
         className={styles.addButton}
         type="button"
         onClick={handleAddIngredient}
+        disabled={disabled}
       >
         <span className={styles.plus}>+</span> Dodaj Składnik
       </button>

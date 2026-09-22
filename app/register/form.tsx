@@ -2,10 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import styles from "./form.module.scss";
 import Image from "next/image";
 import logo from "@/public/logo.png";
-import { validateEmail, validateRequired, type FieldErrors } from "@/lib/validation";
+import {
+  validateEmail,
+  validatePassword,
+  validateRequired,
+  type FieldErrors,
+} from "@/lib/validation";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -30,19 +36,14 @@ export default function RegisterForm() {
     const nextFieldErrors: FieldErrors = {
       name: validateRequired(name, "Imię"),
       email: validateEmail(email),
-      password: "",
-      confirmPassword: "",
+      password: validatePassword(password),
+      confirmPassword: validateRequired(confirmPassword, "Potwierdzenie hasła"),
     };
 
     if (name.length > 0 && name.length < 2) {
       nextFieldErrors.name = "Imię musi mieć co najmniej 2 znaki.";
     }
-    if (password.length < 8) {
-      nextFieldErrors.password = "Hasło musi mieć co najmniej 8 znaków.";
-    } else if (!/[A-Z]/.test(password) || !/\d/.test(password)) {
-      nextFieldErrors.password = "Hasło musi zawierać wielką literę i cyfrę.";
-    }
-    if (password !== confirmPassword) {
+    if (!nextFieldErrors.confirmPassword && password !== confirmPassword) {
       nextFieldErrors.confirmPassword = "Hasła nie są takie same.";
     }
 
@@ -120,7 +121,7 @@ export default function RegisterForm() {
           type="text"
           placeholder="Name"
           name="userName"
-          required
+          aria-invalid={Boolean(fieldErrors.name)}
         />
         {fieldErrors.name && <p className={styles.fieldError}>{fieldErrors.name}</p>}
       </div>
@@ -136,7 +137,7 @@ export default function RegisterForm() {
           type="email"
           placeholder="Email"
           name="email"
-          required
+          aria-invalid={Boolean(fieldErrors.email)}
         />
         {fieldErrors.email && <p className={styles.fieldError}>{fieldErrors.email}</p>}
       </div>
@@ -152,7 +153,7 @@ export default function RegisterForm() {
           type="password"
           placeholder="At least 6 characters"
           name="password"
-          required
+          aria-invalid={Boolean(fieldErrors.password)}
         />
         {fieldErrors.password && <p className={styles.fieldError}>{fieldErrors.password}</p>}
       </div>
@@ -168,7 +169,7 @@ export default function RegisterForm() {
           type="password"
           placeholder="Confirm your Password"
           name="confirmPassword"
-          required
+          aria-invalid={Boolean(fieldErrors.confirmPassword)}
         />
         {fieldErrors.confirmPassword && <p className={styles.fieldError}>{fieldErrors.confirmPassword}</p>}
       </div>
@@ -179,9 +180,9 @@ export default function RegisterForm() {
 
       <p className={styles.footerText}>
         Already have an account?{" "}
-        <a className={styles.link} href="/login">
+        <Link className={styles.link} href="/login">
           Login
-        </a>
+        </Link>
       </p>
     </form>
   );

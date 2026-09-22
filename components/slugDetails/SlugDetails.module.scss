@@ -4,23 +4,29 @@
   justify-content: space-between;
   margin-bottom: 14px;
 
+  .headerActions {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
   .backLink {
     display: flex;
     align-items: center;
     color: #24324a;
-    font-size: 13px;
+    font-size: 1rem;
     padding: 8px 0;
     text-decoration: none;
   }
 
-  button {
-    margin-left: 8px;
+  .editButton {
+    margin-left: 0;
     padding: 8px 12px;
     border: 1px solid #ff4f9a;
     border-radius: 7px;
     background: white;
     color: #ff4f9a;
-    font-size: 12px;
+    font-size: 0.95rem;
     cursor: pointer;
   }
 }
@@ -47,14 +53,14 @@
     .title {
       margin: 0 0 10px;
       color: #ff4f9a;
-      font-size: 17px;
-      font-weight: 500;
+      font-size: 1.75rem;
+      font-weight: 700;
     }
 
     .description {
       margin: 0 0 18px;
       color: #24324a;
-      font-size: 12px;
+      font-size: 1rem;
       line-height: 1.5;
     }
   }
@@ -78,7 +84,7 @@
       border-radius: 6px;
 
       color: #ff4f9a;
-      font-size: 11px;
+      font-size: 0.95rem;
       white-space: nowrap;
     }
   }
@@ -102,8 +108,8 @@
         margin: 0 0 18px;
 
         color: #ff4f9a;
-        font-size: 13px;
-        font-weight: 400;
+        font-size: 1rem;
+        font-weight: 700;
       }
 
       .ingredients {
@@ -119,7 +125,7 @@
           margin-bottom: 12px;
 
           color: #24324a;
-          font-size: 12px;
+          font-size: 0.95rem;
 
           &:last-child {
             margin-bottom: 0;
@@ -148,7 +154,7 @@
       padding: 0;
       list-style: none;
       color: #24324a;
-      font-size: 12px;
+      font-size: 0.95rem;
 
       li {
         display: flex;
@@ -168,7 +174,8 @@
   .sectionTitle {
     margin-bottom: 18px;
     color: #ff4f9a;
-    font-size: 13px;
+    font-size: 1rem;
+    font-weight: 700;
   }
 
   .steps {
@@ -177,7 +184,7 @@
     margin: 0;
     padding-left: 22px;
     color: #24324a;
-    font-size: 12px;
+    font-size: 0.95rem;
     line-height: 1.6;
 
     li {
@@ -189,7 +196,8 @@
     display: none;
     padding: 0 22px 24px;
     color: #ff4f9a;
-    font-size: 13px;
+    font-size: 1rem;
+    font-weight: 700;
   }
 }
 
@@ -197,14 +205,14 @@
   .slugHeader {
     align-items: flex-start;
 
-    > div {
+    .headerActions {
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-end;
       gap: 6px;
     }
 
-    button {
+    .editButton {
       margin-left: 0;
     }
   }

@@ -67,6 +67,11 @@
   }
 }
 
+.inputError {
+  border-color: #e11d48;
+  background: #fff5f6;
+}
+
 .error {
   margin: 0 0 1rem;
   color: #be123c;
@@ -96,6 +101,11 @@
 
   &:active {
     transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 
@@ -128,6 +138,11 @@
 
   &:active {
     transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 
