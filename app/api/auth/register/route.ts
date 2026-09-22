@@ -4,7 +4,7 @@ import { hash } from "bcrypt";
 import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { createUser } from "@/lib/user";
-import { resend } from "@/lib/resend";
+import { getResend } from "@/lib/resend";
 import {
   validateEmail,
   validatePassword,
@@ -43,6 +43,8 @@ export async function POST(req: Request) {
     );
 
     const verificationUrl = `${process.env.APP_URL}/verifyEmail?token=${verificationToken}`;
+    
+    const resend = getResend();
 
     const emailResult = await resend.emails.send({
       from: "Happy Avocado <noreply@happyavocado.pl>",
