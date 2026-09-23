@@ -1,0 +1,353 @@
+.page {
+  min-height: calc(100vh - 82px);
+  padding: 2.5rem 1rem 4rem;
+  background: #fff0f8;
+  color: #24324a;
+}
+
+.container {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+.heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+.backLink {
+  color: #d71969;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.heading h1 {
+  margin: 0.6rem 0 0.35rem;
+  color: #d71969;
+  font-size: 2.2rem;
+}
+.heading p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 1rem;
+}
+.monthControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  border: 1px solid #f4afd0;
+  border-radius: 14px;
+  background: #fff;
+}
+.monthControls strong {
+  min-width: 170px;
+  text-align: center;
+  color: #d71969;
+  font-size: 1.05rem;
+}
+.monthControls button {
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 0;
+  border-radius: 9px;
+  background: #fff0f8;
+  color: #d71969;
+  font-size: 1.7rem;
+  cursor: pointer;
+}
+.heading h1 { font-size: 1.8rem; }
+.monthControls button:hover {
+  background: #ffd4e8;
+}
+.viewSwitch {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.3rem;
+  border: 1px solid #f4afd0;
+  border-radius: 11px;
+  background: #fff;
+}
+.viewSwitch button {
+  padding: 0.55rem 0.8rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #9f1239;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.viewSwitch .activeView {
+  background: #ec4899;
+  color: #fff;
+}
+.error {
+  margin: 0 0 1rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid #f2a7b9;
+  border-radius: 12px;
+  background: #fff5f6;
+  color: #9f1239;
+}
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid #f4bfd6;
+  border-radius: 16px;
+  background: #f8ddec;
+}
+.weekDay {
+  padding: 0.75rem 0.4rem;
+  color: #9f1239;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-align: center;
+}
+.emptyDay,
+.day {
+  min-height: 125px;
+  border-radius: 11px;
+}
+.emptyDay {
+  background: rgba(255, 255, 255, 0.45);
+}
+.day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.7rem;
+  border: 2px solid transparent;
+  background: #fff;
+  color: #24324a;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+}
+.day:hover,
+.day.selected {
+  border-color: #ec4899;
+}
+.day.selected {
+  box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.13);
+}
+.dayNumber {
+  font-size: 1rem;
+  font-weight: 800;
+}
+.dayRecipes {
+  display: flex;
+  gap: 0.25rem;
+  min-height: 34px;
+}
+.dayRecipes a {
+  display: block;
+}
+.dayRecipes img {
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  object-fit: cover;
+}
+.dayCalories {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: auto;
+  color: #d71969;
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: left;
+}
+.planner {
+  margin-top: 1.5rem;
+  padding: 1.4rem;
+  border: 1px solid #f4bfd6;
+  border-radius: 16px;
+  background: #fff;
+}
+.plannerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.plannerHeader span {
+  color: #9f1239;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.plannerHeader h2 {
+  margin: 0.2rem 0 0;
+  color: #d71969;
+  font-size: 1.35rem;
+}
+.entryCount {
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: #fff0f8;
+  color: #d71969 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+.addForm {
+  display: grid;
+  grid-template-columns: 1fr 180px auto;
+  gap: 0.7rem;
+}
+.addForm select,
+.addForm button {
+  min-height: 2.9rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid #f1a8ca;
+  border-radius: 10px;
+  font: inherit;
+}
+.addForm select {
+  background: #fff;
+  color: #24324a;
+}
+.addForm button {
+  border-color: #ec4899;
+  background: #ec4899;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+.addForm button:disabled,
+.addForm select:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.entryList {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.entry {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem;
+  border: 1px solid #f7cde0;
+  border-radius: 11px;
+  background: #fff8fc;
+}
+.entry img {
+  width: 52px;
+  height: 52px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.entry > a {
+  display: block;
+}
+.entryContent {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+.entry strong {
+  color: #24324a;
+  font-size: 0.95rem;
+}
+.entryTitle {
+  color: #24324a;
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+.entryTitle:hover {
+  color: #d71969;
+  text-decoration: underline;
+}
+.entryMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  color: #9f1239;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+.entryMeta span {
+  color: #9f1239;
+}
+.entry button {
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 7px;
+  background: #ffe1ec;
+  color: #be123c;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+.emptyMessage {
+  margin: 0.5rem 0 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding-top: 1.4rem;
+  }
+  .heading {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .heading h1 {
+    font-size: 1.8rem;
+  }
+  .monthControls {
+    justify-content: space-between;
+  }
+  .viewSwitch {
+    justify-content: center;
+  }
+  .calendar {
+    gap: 3px;
+  }
+  .weekDay {
+    padding: 0.5rem 0.1rem;
+    font-size: 0.7rem;
+  }
+  .emptyDay,
+  .day {
+    min-height: 92px;
+  }
+  .day {
+    padding: 0.45rem;
+  }
+  .dayRecipes img {
+    width: 25px;
+    height: 25px;
+  }
+  .dayCalories {
+    font-size: 0.62rem;
+    gap: 0.12rem;
+  }
+  .entry {
+    align-items: flex-start;
+    padding: 0.7rem 0.6rem;
+  }
+  .entryMeta {
+    font-size: 0.76rem;
+  }
+  .addForm {
+    grid-template-columns: 1fr;
+  }
+}

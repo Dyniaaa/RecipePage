@@ -18,6 +18,7 @@ model User {
   recipes   Recipe[]
   favorites Favorite[]
   comments  Comment[]
+  calendarEntries CalendarEntry[]
 
   emailVerified      DateTime?
   verificationToken  String?   @unique
@@ -45,6 +46,7 @@ model Recipe {
 
   favorites   Favorite[]
   comments    Comment[]
+  calendarEntries CalendarEntry[]
 
   @@index([title])
 }
@@ -91,4 +93,19 @@ model Comment {
 
   user      User     @relation(fields: [userId], references: [id])
   recipe    Recipe   @relation(fields: [recipeId], references: [id])
+}
+
+model CalendarEntry {
+  id        String   @id @default(cuid())
+  date      String
+  servings  Float
+  createdAt DateTime @default(now())
+
+  userId    String
+  recipeId  String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date, recipeId])
+  @@index([userId, date])
 }
