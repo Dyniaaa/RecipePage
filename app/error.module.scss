@@ -42,7 +42,9 @@
   line-height: 1.6;
 }
 
-.card button {
+.card button,
+.card .link {
+  display: inline-block;
   border: 0;
   border-radius: 999px;
   padding: 0.85rem 1.25rem;
@@ -59,7 +61,13 @@
   transform: translateY(-1px);
 }
 
-.card button:focus-visible {
+.card .link:hover {
+  background: #be185d;
+  transform: translateY(-1px);
+}
+
+.card button:focus-visible,
+.card .link:focus-visible {
   outline: 3px solid rgba(219, 39, 119, 0.3);
   outline-offset: 3px;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import styles from "./page.module.scss";
 
@@ -309,9 +310,12 @@ export default function CalendarPage() {
                       onClick={(event) => event.stopPropagation()}
                       title={`Otwórz ${entry.recipe.title}`}
                     >
-                      <img
+                      <Image
                         src={entry.recipe.image || "/placeholder.jpg"}
                         alt={entry.recipe.title}
+                        width={64}
+                        height={64}
+                        unoptimized
                       />
                     </Link>
                   ))}
@@ -374,9 +378,12 @@ export default function CalendarPage() {
                   href={`/${entry.recipe.id}`}
                   title={`Otwórz ${entry.recipe.title}`}
                 >
-                  <img
+                  <Image
                     src={entry.recipe.image || "/placeholder.jpg"}
                     alt={entry.recipe.title}
+                    width={96}
+                    height={96}
+                    unoptimized
                   />
                 </Link>
                 <div className={styles.entryContent}>

@@ -3,13 +3,14 @@
 import { useState } from "react";
 import styles from "./profileRecipes.module.scss";
 import RecipesMap from "@/components/recipesMap";
+import type { RecipeCard } from "@/types/recipe";
 
 export default function ProfileRecipes({
   recipes,
   favoriteRecipes,
 }: {
-  recipes: any[];
-  favoriteRecipes: any[];
+  recipes: RecipeCard[];
+  favoriteRecipes: RecipeCard[];
 }) {
   const [list, setList] = useState(true);
 

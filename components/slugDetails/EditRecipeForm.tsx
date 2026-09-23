@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Image from "next/image";
 import styles from "./EditRecipeForm.module.scss";
 import StepsSection from "../StepsSection";
 import IngredientsSection from "../IngredientsSection";
@@ -10,50 +11,39 @@ import {
   validateRequired,
   type FieldErrors,
 } from "@/lib/validation";
+import type { RecipeDetails } from "@/types/recipe";
 
 export default function EditRecipeForm({
   recipe,
   setEdit,
 }: {
-  recipe: any;
+  recipe: RecipeDetails;
   setEdit: (edit: boolean) => void;
 }) {
   const router = useRouter();
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [imagePreview, setImagePreview] = useState("/placeholder.jpg");
+  const [title, setTitle] = useState(recipe.title);
+  const [description, setDescription] = useState(recipe.description ?? "");
+  const [imagePreview, setImagePreview] = useState(recipe.image || "/placeholder.jpg");
   const [imageBase64, setImageBase64] = useState<string | null>(null);
-  const [time, setTime] = useState(0);
-  const [servings, setServings] = useState(1);
-  const [calories, setCalories] = useState(0);
-  const [protein, setProtein] = useState(0);
+  const [time, setTime] = useState(recipe.time ?? 0);
+  const [servings, setServings] = useState(recipe.servings ?? 1);
+  const [calories, setCalories] = useState(recipe.calories ?? 0);
+  const [protein, setProtein] = useState(recipe.protein ?? 0);
   const [ingredients, setIngredients] = useState<
     { id: string; name: string; amount: string }[]
-  >([{ id: "1", name: "", amount: "" }]);
+  >(
+    recipe.ingredients.map((ingredient) => ({
+      id: ingredient.id,
+      name: ingredient.name,
+      amount: ingredient.amount ?? "",
+    })),
+  );
 
-  const [steps, setSteps] = useState<{ id: string; text: string }[]>([
-    { id: "1", text: "" },
-  ]);
+  const [steps, setSteps] = useState(() => recipe.steps);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (recipe) {
-      setTitle(recipe.title);
-      setDescription(recipe.description ?? "");
-      setImagePreview(recipe.image || "/placeholder.jpg");
-      setImageBase64(null);
-      setTime(recipe.time ?? 0);
-      setServings(recipe.servings ?? 1);
-      setCalories(recipe.calories ?? 0);
-      setProtein(recipe.protein ?? 0);
-
-      setIngredients(recipe.ingredients);
-      setSteps(recipe.steps);
-    }
-  }, [recipe]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -168,7 +158,14 @@ export default function EditRecipeForm({
       )}
       <div className={styles.recipe}>
         <div className={styles.imageSection}>
-          <img src={imagePreview} alt="Podgląd zdjęcia przepisu" className={styles.image} />
+          <Image
+            src={imagePreview}
+            alt="Podgląd zdjęcia przepisu"
+            className={styles.image}
+            width={960}
+            height={640}
+            unoptimized
+          />
           <label className={styles.imageLabel} htmlFor="recipeImage">
             Zmień zdjęcie przepisu
           </label>

@@ -1,17 +1,22 @@
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./recipesMap.module.scss";
+import type { RecipeCard } from "@/types/recipe";
 
-export default function RecipesMap({ recipes }: { recipes: any[] }) {
+export default function RecipesMap({ recipes }: { recipes: RecipeCard[] }) {
   return (
     <ul className={styles.grid}>
       {recipes.map((recipe) => (
         <li key={recipe.id} className={styles.card}>
           <Link href={recipe.id}>
             <div className={styles.imageWrapper}>
-              <img
+              <Image
                 src={recipe.image || "/placeholder.jpg"}
                 alt={recipe.title}
                 className={styles.image}
+                width={640}
+                height={480}
+                unoptimized
               />
             </div>
 

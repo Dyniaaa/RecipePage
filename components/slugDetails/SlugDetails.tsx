@@ -2,8 +2,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { isFavorite } from "@/lib/favorite";
 import SlugDetailsClient from "./SlugDetailsClient";
+import type { RecipeDetails } from "@/types/recipe";
 
-export default async function SlugDetails({ recipe }: { recipe: any }) {
+export default async function SlugDetails({ recipe }: { recipe: RecipeDetails }) {
   const session = await getServerSession(authOptions);
 
   let favorite = false;
@@ -12,5 +13,13 @@ export default async function SlugDetails({ recipe }: { recipe: any }) {
     favorite = await isFavorite(session.user.id, recipe.id);
   }
 
-  return <SlugDetailsClient recipe={recipe} isFavorite={favorite} />;
+  const canEdit = session?.user?.id === recipe.authorId;
+
+  return (
+    <SlugDetailsClient
+      recipe={recipe}
+      isFavorite={favorite}
+      canEdit={canEdit}
+    />
+  );
 }

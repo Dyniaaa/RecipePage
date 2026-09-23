@@ -7,5 +7,7 @@ export default withAuth({
 });
 
 export const config = {
-  matcher: ["/addRecipe", "/", "/profile"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|login|register|verifyEmail).*)",
+  ],
 };

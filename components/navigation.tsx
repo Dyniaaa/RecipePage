@@ -25,10 +25,13 @@ export default function Navigation({ session }: { session: Session | null }) {
         <div className={styles.actions}>
           <Link href="/profile" className={styles.user}>
             {session?.user?.image ? (
-              <img
+              <Image
                 className={styles.userAvatar}
                 src={session.user.image}
                 alt=""
+                width={40}
+                height={40}
+                unoptimized
               />
             ) : (
               <span className={styles.userAvatarFallback} aria-hidden="true">

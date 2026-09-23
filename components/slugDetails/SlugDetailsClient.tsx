@@ -1,17 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import styles from "./SlugDetails.module.scss";
 import Link from "next/link";
 import EditRecipeForm from "./EditRecipeForm";
 import { FavoriteButton } from "../favoriteButton";
+import type { RecipeDetails } from "@/types/recipe";
 
 export default function SlugDetailsClient({
   recipe,
   isFavorite,
+  canEdit,
 }: {
-  recipe: any;
+  recipe: RecipeDetails;
   isFavorite: boolean;
+  canEdit: boolean;
 }) {
   const [edit, setEdit] = useState(false);
 
@@ -25,18 +29,23 @@ export default function SlugDetailsClient({
         <div className={styles.headerActions}>
           <FavoriteButton recipeId={recipe.id} isFavorite={isFavorite} />
 
-          <button className={styles.editButton} onClick={() => setEdit(!edit)}>
-            Edytuj przepis
-          </button>
+          {canEdit && (
+            <button className={styles.editButton} onClick={() => setEdit(!edit)}>
+              Edytuj przepis
+            </button>
+          )}
         </div>
       </header>
 
-      {!edit ? (
+      {!edit || !canEdit ? (
         <div className={styles.recipe}>
-          <img
+          <Image
             src={recipe.image || "/placeholder.jpg"}
             alt={recipe.title}
             className={styles.image}
+            width={960}
+            height={640}
+            unoptimized
           />
 
           <div className={styles.info}>
@@ -55,7 +64,7 @@ export default function SlugDetailsClient({
               <p className={styles.cardTitle}>Składniki</p>
 
               <ul className={styles.ingredients}>
-                {recipe.ingredients.map((ing: any) => (
+                {recipe.ingredients.map((ing) => (
                   <li className={styles.ingredient} key={ing.id}>
                     <p className={styles.ingredientName}>
                       {ing.name} - {ing.amount}
@@ -106,7 +115,7 @@ export default function SlugDetailsClient({
             <p className={styles.sectionTitle}>Instrukcje</p>
 
             <ol className={styles.steps}>
-              {recipe.steps.map((step: any) => (
+              {recipe.steps.map((step) => (
                 <li key={step.id}>{step.text}</li>
               ))}
             </ol>

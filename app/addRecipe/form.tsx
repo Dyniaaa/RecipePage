@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import styles from "./form.module.scss";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -199,7 +200,13 @@ export default function AddRecipeForm({ userEmail }: { userEmail: string }) {
           {fieldErrors.image && <p className={styles.fieldError}>{fieldErrors.image}</p>}
           {imagePreview && (
             <div className={styles.imagePreview}>
-              <img src={imagePreview} alt="Preview" />
+              <Image
+                src={imagePreview}
+                alt="Preview"
+                width={640}
+                height={480}
+                unoptimized
+              />
             </div>
           )}
         </div>

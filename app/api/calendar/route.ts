@@ -11,24 +11,29 @@ async function getUserId() {
 }
 
 export async function GET(req: Request) {
-  const userId = await getUserId();
-  if (!userId) return NextResponse.json({ message: "Brak autoryzacji" }, { status: 401 });
+  try {
+    const userId = await getUserId();
+    if (!userId) return NextResponse.json({ message: "Brak autoryzacji" }, { status: 401 });
 
-  const { searchParams } = new URL(req.url);
-  const start = searchParams.get("start") || "";
-  const end = searchParams.get("end") || "";
-  if (!datePattern.test(start) || !datePattern.test(end)) {
-    return NextResponse.json({ message: "Nieprawidłowy zakres dat" }, { status: 400 });
+    const { searchParams } = new URL(req.url);
+    const start = searchParams.get("start") || "";
+    const end = searchParams.get("end") || "";
+    if (!datePattern.test(start) || !datePattern.test(end)) {
+      return NextResponse.json({ message: "Nieprawidłowy zakres dat" }, { status: 400 });
+    }
+
+    return NextResponse.json(await getCalendarEntries(userId, start, end));
+  } catch (error) {
+    console.error("Błąd pobierania kalendarza:", error);
+    return NextResponse.json({ message: "Nie udało się pobrać kalendarza" }, { status: 500 });
   }
-
-  return NextResponse.json(await getCalendarEntries(userId, start, end));
 }
 
 export async function POST(req: Request) {
-  const userId = await getUserId();
-  if (!userId) return NextResponse.json({ message: "Brak autoryzacji" }, { status: 401 });
-
   try {
+    const userId = await getUserId();
+    if (!userId) return NextResponse.json({ message: "Brak autoryzacji" }, { status: 401 });
+
     const body = await req.json();
     const servings = Number(body.servings);
     if (
@@ -53,11 +58,16 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const userId = await getUserId();
-  if (!userId) return NextResponse.json({ message: "Brak autoryzacji" }, { status: 401 });
+  try {
+    const userId = await getUserId();
+    if (!userId) return NextResponse.json({ message: "Brak autoryzacji" }, { status: 401 });
 
-  const { id } = await req.json();
-  if (!id) return NextResponse.json({ message: "Brak wpisu" }, { status: 400 });
-  await deleteCalendarEntry(userId, id);
-  return NextResponse.json({ ok: true });
+    const { id } = await req.json();
+    if (!id) return NextResponse.json({ message: "Brak wpisu" }, { status: 400 });
+    await deleteCalendarEntry(userId, id);
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("Błąd usuwania wpisu z kalendarza:", error);
+    return NextResponse.json({ message: "Nie udało się usunąć wpisu" }, { status: 500 });
+  }
 }

@@ -149,10 +149,13 @@ export default function ProfileForm() {
                 </span>
               </div>
             ) : (
-              <img
+              <Image
                 src={session.user.image}
                 alt="User Avatar"
                 className={styles.avatarImage}
+                width={160}
+                height={160}
+                unoptimized
               />
             )}
           </div>
@@ -186,7 +189,13 @@ export default function ProfileForm() {
           {fieldErrors.image && <p className={styles.fieldError}>{fieldErrors.image}</p>}
           {imagePreview && (
             <div className={styles.imagePreview}>
-              <img src={imagePreview} alt="Preview" />
+              <Image
+                src={imagePreview}
+                alt="Preview"
+                width={640}
+                height={480}
+                unoptimized
+              />
             </div>
           )}
 
