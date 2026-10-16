@@ -271,11 +271,12 @@ export default function CalendarPage() {
         )}
 
         <section className={styles.calendar} aria-label="Kalendarz">
-          {weekDays.map((day) => (
-            <div className={styles.weekDay} key={day}>
-              {day}
-            </div>
-          ))}
+          {viewMode === "month" &&
+            weekDays.map((day) => (
+              <div className={styles.weekDay} key={day}>
+                {day}
+              </div>
+            ))}
           {days.map((day, index) => {
             if (!day)
               return <div className={styles.emptyDay} key={`empty-${index}`} />;
@@ -301,6 +302,11 @@ export default function CalendarPage() {
                     setSelectedDate(key);
                 }}
               >
+                {viewMode === "week" && (
+                  <span className={styles.dayWeekday}>
+                    {day.toLocaleDateString("pl-PL", { weekday: "long" })}
+                  </span>
+                )}
                 <span className={styles.dayNumber}>{day.getDate()}</span>
                 <span className={styles.dayRecipes}>
                   {dayEntries.slice(0, 3).map((entry) => (

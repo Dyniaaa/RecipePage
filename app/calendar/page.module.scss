@@ -137,6 +137,12 @@
 .day.selected {
   box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.13);
 }
+.dayWeekday {
+  color: #9f1239;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
 .dayNumber {
   font-size: 1rem;
   font-weight: 800;
